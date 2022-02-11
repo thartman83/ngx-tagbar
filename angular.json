@@ -42,6 +42,123 @@
           }
         }
       }
+    },
+    "tagbar-example": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/tagbar-example",
+      "sourceRoot": "projects/tagbar-example/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/tagbar-example",
+            "index": "projects/tagbar-example/src/index.html",
+            "main": "projects/tagbar-example/src/main.ts",
+            "polyfills": "projects/tagbar-example/src/polyfills.ts",
+            "tsConfig": "projects/tagbar-example/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/tagbar-example/src/favicon.ico",
+              "projects/tagbar-example/src/assets"
+            ],
+            "styles": [
+              "projects/tagbar-example/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/tagbar-example/src/environments/environment.ts",
+                  "with": "projects/tagbar-example/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "tagbar-example:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "tagbar-example:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "tagbar-example:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/tagbar-example/src/test.ts",
+            "polyfills": "projects/tagbar-example/src/polyfills.ts",
+            "tsConfig": "projects/tagbar-example/tsconfig.spec.json",
+            "karmaConfig": "projects/tagbar-example/karma.conf.js",
+            "assets": [
+              "projects/tagbar-example/src/favicon.ico",
+              "projects/tagbar-example/src/assets"
+            ],
+            "styles": [
+              "projects/tagbar-example/src/styles.css"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/tagbar-example/tsconfig.app.json",
+              "projects/tagbar-example/tsconfig.spec.json",
+              "projects/tagbar-example/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/tagbar-example/e2e/protractor.conf.js",
+            "devServerTarget": "tagbar-example:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "tagbar-example:serve:production"
+            }
+          }
+        }
+      }
     }},
   "defaultProject": "tagbar"
 }

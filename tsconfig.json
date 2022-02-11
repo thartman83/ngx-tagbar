@@ -12,6 +12,12 @@
     },
     {
       "path": "./projects/tagbar/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/tagbar-example/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/tagbar-example/tsconfig.spec.json"
     }
 ]
 }
