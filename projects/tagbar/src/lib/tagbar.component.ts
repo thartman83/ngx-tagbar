@@ -2,19 +2,21 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'ngx-tagbar',
-  template: `
-    <p>
-      tagbar works!
-    </p>
-  `,
+  templateUrl: 'tagbar.component.html',
   styles: [
   ]
 })
 export class TagbarComponent implements OnInit {
 
-  constructor() { }
-
+  tags: string[];
+  needle: string;
+  
   ngOnInit(): void {
+    this.tags = [];
+  }
+
+  addTag(newTag: string) {
+    this.tags.push(newTag);
   }
 
 }

@@ -1,0 +1,5 @@
+<input name="tagSearch" type="text" (value)="needle"
+       (keydown.enter)="addTag($event.target.value)" />
+<ul>
+  <li *ngFor="let tag of tags">{{tag}}</li>
+</ul>
