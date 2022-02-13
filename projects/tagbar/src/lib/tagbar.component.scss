@@ -1,0 +1,43 @@
+.tagbar-- {
+    &parent {
+	display: flex;
+	border-style: solid;
+	border-radius: 5px;
+	border-width: 1px;
+	height: 2.5rem;
+	align-items: center;
+    }
+
+    &tag-list {
+	display: contents;
+	list-style-type: none;
+    }
+
+    &tag-selected {
+	padding: .25rem;
+	margin: .25rem;
+	background-color: blue;
+	border-radius: 5px;
+	color: white;
+	padding: .5rem;
+	display: flex;
+
+	&-text {
+
+	}
+
+	&-remove-tag {
+
+	}
+    }
+
+    &remove-tag {
+	color:white;
+    }
+
+    &input {
+	border: none;
+	width: 100%;
+	height: 100%;
+    }
+}

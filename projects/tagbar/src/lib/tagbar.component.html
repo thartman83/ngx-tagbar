@@ -1,5 +1,11 @@
-<input name="tagSearch" type="text" (value)="needle"
-       (keydown.enter)="addTag($event.target.value)" />
-<ul>
-  <li *ngFor="let tag of tags">{{tag}}</li>
-</ul>
+<span class="tagbar--parent">
+  <ul class="tagbar--tag-list">
+    <div class="tagbar--tag-selected" *ngFor="let tag of tags">
+      <li class="tagbar--tag-selected-text" >{{tag}}</li>
+      <span class="tagbar--tag-selected-remove-tag">X</span>
+    </div>
+    
+  </ul>
+  <input class="tagbar--input" name="tagSearch" type="text" (value)="needle"
+	 (keydown.enter)="addTag($event.target.value)" />
+</span>

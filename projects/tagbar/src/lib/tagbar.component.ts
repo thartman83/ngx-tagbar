@@ -3,8 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'ngx-tagbar',
   templateUrl: 'tagbar.component.html',
-  styles: [
-  ]
+  styleUrls: ['./tagbar.component.scss' ]
 })
 export class TagbarComponent implements OnInit {
 
@@ -17,6 +16,7 @@ export class TagbarComponent implements OnInit {
 
   addTag(newTag: string) {
     this.tags.push(newTag);
+    this.needle = '';
   }
 
 }
