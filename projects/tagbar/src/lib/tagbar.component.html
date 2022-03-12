@@ -1,0 +1,15 @@
+<span class="tagbar--parent" (click)="newtag.focus()">
+  <ul class="tagbar--tag-list">
+    <div class="tagbar--tag-selected" *ngFor="let tag of tags">
+      <li class="tagbar--tag-selected-text" >{{tag}}</li>
+      <span class="tagbar--tag-selected-remove-tag">
+	      <button type="button" class="tagbar--tag-selected-remove-tag-btn" (click)="removeTag(tag)">X
+<!--	        <fa-icon [icon]="faTimes"></fa-icon> -->
+	      </button>
+      </span>
+    </div>
+
+  </ul>
+  <input #newtag class="tagbar--input" name="tagSearch" type="text" (value)="needle"
+	 (keydown.enter)="addTag(newtag.value); newtag.value=''" (blur)="addTag(newtag.value); newtag.value = ''" />
+</span>
