@@ -9,6 +9,8 @@ export class TagbarComponent implements OnInit {
 
   private _tags: string[] = [];
   private _tagColor: string = '#666666';
+  private _limited: boolean = false;
+  private _source: string[] | ((needle: string) => string[]) = [];
 
   @HostBinding("style.--tag-color")
   @Input('tag-color')
@@ -25,6 +27,22 @@ export class TagbarComponent implements OnInit {
   }
   set tags(tags: string[]) {
     this._tags = tags;
+  }
+
+  @Input('limited')
+  get limited(): boolean {
+    return this._limited;
+  }
+  set limited(limited) {
+    this._limited = limited;
+  }
+
+  @Input('source')
+  get source(): string[] | ((needle: string) => string[]) {
+    return this._source;
+  }
+  set source(source) {
+    this._source = source;
   }
 
   constructor() {
@@ -58,4 +76,11 @@ export class TagbarComponent implements OnInit {
     return this._tags.indexOf(tag, 0);
   }
 
+  getMatchingSourceTags(needle: string) : string[] {
+    if(typeof(this._source) === 'function') {
+      return this._source(needle);
+    } else {
+      return this._source.filter((tag) => tag.indexOf(needle) !== -1);
+    }
+  }
 }
