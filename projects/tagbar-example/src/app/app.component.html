@@ -1,1 +1,62 @@
-<ngx-tagbar></ngx-tagbar>
+<div class="example-set">
+  <h2>Tag Bar Examples</h2>
+
+  <div class="example-group">
+    <div class="example-input-group">
+      <label class="example-label">Empty Default Tag Bar</label>
+      <ngx-tagbar></ngx-tagbar>
+    </div>
+
+    <div class="example-code-group">
+      <label class="example-label">Code</label>
+      <div class="example-code--code">
+        <code [innerText]="codeBlock1"></code>
+      </div>
+    </div>
+  </div>
+
+  <div class="example-group">
+    <div class="example-input-group">
+
+      <label class="example-label">Empty Tag Bar with blue tags</label>
+      <ngx-tagbar tag-color="#00F" ></ngx-tagbar>
+
+    </div>
+
+    <div class="example-code-group">
+      <label class="example-label">Code</label>
+      <div class="example-code--code">
+        <code [innerText]="codeBlock2"></code>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="example-group">
+    <div class="example-input-group">
+      <label class="example-label">Tag bar with existing tags</label>
+      <ngx-tagbar [tags]="['foo','bar','baz']"></ngx-tagbar>
+    </div>
+
+    <div class="example-code-group">
+      <label class="example-label">Code</label>
+      <div class="example-code--code">
+        <code [innerText]="codeBlock3"></code>
+      </div>
+    </div>
+  </div>
+
+  <div class="example-group">
+    <div class="example-input-group">
+      <label class="example-label" for="">Tag bar with a max of 3 tags</label>
+      <ngx-tagbar [tags]="['foo','bar']" [maxTags]="3"></ngx-tagbar>
+    </div>
+
+    <div class="example-code-group">
+      <label class="example-label" for="">Code</label>
+      <div class="example-code--code">
+        <code [innerText]="codeBlock4"></code>
+      </div>
+    </div>
+  </div>
+</div>
