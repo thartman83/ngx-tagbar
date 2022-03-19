@@ -14,6 +14,7 @@ export class TagbarComponent implements OnInit {
   private _limited: boolean = false;
   private _source: string[] | ((needle: string) => string[]) = [];
   private _maxTags: number = -1;
+  isSearching: boolean = false;
 
   @HostBinding("style.--tag-color")
   @Input('tag-color')

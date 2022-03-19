@@ -1,3 +1,4 @@
+import { Testability } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { TagbarComponent } from './tagbar.component';
@@ -184,6 +185,19 @@ describe('TagbarComponent', () => {
       compEl.dispatchEvent(new Event('click'));
       expect(i.focus).toHaveBeenCalled();
       expect(compEl.focus).not.toHaveBeenCalled();
+    });
+
+    it('should show the search options when isSearching is true', () => {
+      const de = fixture.debugElement;
+
+      // Should not be displayed here
+      expect(de.query(By.css('.tagbar--search'))).toBeNull();
+      // start searching....
+      component.isSearching = true;
+      fixture.detectChanges();
+
+      // Should be displayed here
+      expect(de.query(By.css('.tagbar--search')).nativeElement).toBeTruthy();
     });
   });
 });

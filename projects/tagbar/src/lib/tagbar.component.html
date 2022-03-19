@@ -16,4 +16,11 @@
            (blur)="addTag(newtag.value); newtag.value = ''"
            autocorrect="off" autocomplete="off" />
   </span>
+  <ng-container *ngIf="isSearching">
+    <div class="tagbar--search">
+      <ul class="tagbar--search-list">
+        <li class="tagbar--search-list-item" *ngFor="let searchTag of searchTags">{{searchTag}}</li>
+      </ul>
+    </div>
+  </ng-container>
 </span>
