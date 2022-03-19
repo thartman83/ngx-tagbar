@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { By } from '@angular/platform-browser';
 import { TagbarComponent } from './tagbar.component';
 
 describe('TagbarComponent', () => {
@@ -147,6 +147,43 @@ describe('TagbarComponent', () => {
 
     it(`should create`, () => {
       expect(component).toBeTruthy();
+    });
+
+    it(`should add a tag when entered into the keyboard`, () => {      
+      const de = fixture.debugElement;
+      const tagname = 'foobar';
+      const i = de.query(By.css('.tagbar--input')).nativeElement;
+
+      // add the tag
+      i.value = tagname;
+      i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' } ));
+      
+      expect(component.tags.length).toEqual(1);
+      expect(component.tags).toContain(tagname);      
+    });
+
+    it('should add a tag when the input field has a value and it losses focus', () => {
+      const de = fixture.debugElement;
+      const tagname = 'foobar';
+      const i = de.query(By.css('.tagbar--input')).nativeElement;
+
+      i.value = tagname;
+      i.dispatchEvent(new Event('blur'));
+      
+      expect(component.tags.length).toEqual(1);
+      expect(component.tags).toContain(tagname);      
+    });
+
+    it('should focus the input element when the component is clicked on', () => {
+      const de = fixture.debugElement;
+      const i = de.query(By.css('.tagbar--input')).nativeElement;
+      const compEl = de.query(By.css('.tagbar--parent')).nativeElement;
+
+      spyOn(i, 'focus');
+      spyOn(compEl, 'focus')
+      compEl.dispatchEvent(new Event('click'));
+      expect(i.focus).toHaveBeenCalled();
+      expect(compEl.focus).not.toHaveBeenCalled();
     });
   });
 });
