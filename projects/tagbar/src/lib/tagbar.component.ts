@@ -95,9 +95,15 @@ export class TagbarComponent implements OnInit {
     let tag = newTag;
     
     if(tag !== "")
-      this.addTag(tag);
+      this.addTag(tag);    
+  }
 
-    
+  deleteNewestTag(newTag: string) {
+    if(newTag !== "") {
+      return;
+    }
+
+    this._tags.splice(this._tags.length-1, 1)
   }
   
   onFocus(needle: string) : void {

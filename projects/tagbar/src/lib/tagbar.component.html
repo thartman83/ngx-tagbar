@@ -13,6 +13,7 @@
     </ul>
     <input #newtag class="tagbar--input" name="tagSearch" type="text"
            (keydown.enter)="addTag(newtag.value); newtag.value=''"
+	   (keydown.backspace)="deleteNewestTag(newtag.value)"
            (blur)="onBlur(newtag.value)"
 	   (focus)="onFocus(newtag.value)"
            autocorrect="off" autocomplete="off" />

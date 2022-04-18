@@ -200,6 +200,26 @@ describe('TagbarComponent', () => {
       expect(de.query(By.css('.tagbar--search')).nativeElement).toBeTruthy();
     });
 
+    it(`when a tag is present,
+        should remove the left most tag when backspace is pressed`,
+       fakeAsync( () => {
+	 component.addTag('foo');
+	 component.addTag('bar');
+	 
+	 expect(component.tags.length).toEqual(2);	 
+
+	 const de = fixture.debugElement;	 
+	 const i = de.query(By.css('.tagbar--input')).nativeElement;
+
+	 i.dispatchEvent(new KeyboardEvent('keydown', {
+	   "key": "backspace"
+	 }));
+	 tick();
+	 fixture.detectChanges();
+
+	 expect(component.tags.length).toEqual(1);
+       }));
+
 
     describe('Static source', () => {
 
