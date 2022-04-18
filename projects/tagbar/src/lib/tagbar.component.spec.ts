@@ -200,26 +200,57 @@ describe('TagbarComponent', () => {
       expect(de.query(By.css('.tagbar--search')).nativeElement).toBeTruthy();
     });
 
-    it(`when a tag is present,
-        should remove the left most tag when backspace is pressed`,
-       fakeAsync( () => {
-	 component.addTag('foo');
-	 component.addTag('bar');
-	 
-	 expect(component.tags.length).toEqual(2);	 
+    describe(`Removing a tag`, () => {
+      it(`when a tage is present
+          should remove a tag when the tag 'X' button is clicked`,
+	 fakeAsync( () => {
+	   let tag = 'foo';
+	   let otherTag = 'bar';
+	   component.addTag(tag)
+	   component.addTag(otherTag);
+	   fixture.detectChanges();
+	   
+	   expect(component.tags.length).toEqual(2);
+	   expect(component.tags.indexOf(tag)).not.toEqual(-1);
+	   expect(component.tags.indexOf(otherTag)).not.toEqual(-1);
+	   
+	   const de = fixture.debugElement;	 
+	   //	   const btn = de.query(By.css('.tagbar--tag-list:first-child>.tagbar--tag-selected-remove-tag'))
+	   const btn = de.query(By.css('.tagbar--tag-selected-remove-tag-btn')).
+	     nativeElement;
 
-	 const de = fixture.debugElement;	 
-	 const i = de.query(By.css('.tagbar--input')).nativeElement;
-
-	 i.dispatchEvent(new KeyboardEvent('keydown', {
-	   "key": "backspace"
+	   btn.click();
+	   tick();
+	   fixture.detectChanges();
+	   
+	   expect(component.tags.length).toEqual(1);
+	   expect(component.tags.indexOf(tag)).toEqual(-1);
+	   expect(component.tags.indexOf(otherTag)).not.toEqual(-1);
 	 }));
-	 tick();
-	 fixture.detectChanges();
 
-	 expect(component.tags.length).toEqual(1);
+      
+      it(`when a tag is present,
+          should remove the left most tag when backspace is pressed`,
+	 fakeAsync( () => {
+	   component.addTag('foo');
+	   component.addTag('bar');
+	 
+	   expect(component.tags.length).toEqual(2);	 
+
+	   const de = fixture.debugElement;	 
+	   const i = de.query(By.css('.tagbar--input')).nativeElement;
+
+	   // simulate a backspace message
+	   i.dispatchEvent(new KeyboardEvent('keydown', {
+	     "key": "backspace"
+	   }));
+	   tick();
+	   fixture.detectChanges();
+
+	   expect(component.tags.length).toEqual(1);
        }));
 
+    });
 
     describe('Static source', () => {
 
