@@ -1,4 +1,4 @@
-<span class="tagbar--parent" (click)="newtag.focus()">
+<span class="tagbar--parent" (click)="newtag.focus()" (focus)="newtag.focus()">
   <span class="tagbar--input-group">
 
     <ul class="tagbar--tag-list">
@@ -12,15 +12,18 @@
 
     </ul>
     <input #newtag class="tagbar--input" name="tagSearch" type="text"
-	         (keydown.enter)="addTag(newtag.value); newtag.value=''"
-           (blur)="addTag(newtag.value); newtag.value = ''"
+           (keydown.enter)="addTag(newtag.value); newtag.value=''"
+           (blur)="onBlur(newtag.value)"
+	   (focus)="onFocus(newtag.value)"
            autocorrect="off" autocomplete="off" />
   </span>
-  <ng-container *ngIf="isSearching">
-    <div class="tagbar--search">
-      <ul class="tagbar--search-list">
-        <li class="tagbar--search-list-item" *ngFor="let searchTag of searchTags">{{searchTag}}</li>
-      </ul>
-    </div>
-  </ng-container>
 </span>
+<ng-container *ngIf="isSearching">
+  <div class="tagbar--search">
+    <ul class="tagbar--search-list">
+      <li class="tagbar--search-list-item"   
+	  *ngFor="let searchTag of _searchTags"
+	  (click)="addSearchItem(searchTag)">{{searchTag}}</li>
+    </ul>
+  </div>
+</ng-container>

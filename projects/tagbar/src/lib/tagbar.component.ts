@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostBinding } from '@angular/core';
+import { Component, OnInit, Input, HostBinding, HostListener } from '@angular/core';
 
 const defaultTagColor = '#666666'
 
@@ -14,6 +14,9 @@ export class TagbarComponent implements OnInit {
   private _limited: boolean = false;
   private _source: string[] | ((needle: string) => string[]) = [];
   private _maxTags: number = -1;
+  private _minimumInput: number = 0;
+  private _searchTags: string[] = null;
+  
   isSearching: boolean = false;
 
   @HostBinding("style.--tag-color")
@@ -37,12 +40,15 @@ export class TagbarComponent implements OnInit {
   get maxTags(): number { return this._maxTags; }
   set maxTags(maxTags: number) { this._maxTags = maxTags }
 
+  @Input('minimumInput')
+  get minimumInput(): number { return this._minimumInput; }
+  set minimumInput(minimumInput: number) { this._minimumInput = minimumInput ;}
+  
   constructor() { }
 
   ngOnInit(): void { }
 
   addTag(newTag: string) {
-
     // strip the whitespace from the beginning and ending of the tag
     newTag = newTag.trim();
 
@@ -82,5 +88,31 @@ export class TagbarComponent implements OnInit {
     } else {
       return this._source.filter((tag) => tag.indexOf(needle) !== -1);
     }
+  }
+
+  ///**  event functions  ***///
+  onBlur(newTag: string) {
+    let tag = newTag;
+    
+    if(tag !== "")
+      this.addTag(tag);
+
+    
+  }
+  
+  onFocus(needle: string) : void {
+    if(this.source.length !== 0 && needle.length >= this.minimumInput) {
+      this.displaySearchTags(this.source as string[]);
+    }
+  }
+
+  displaySearchTags(searchTags: string[]) {
+    this.isSearching = true;
+    this._searchTags = searchTags;
+  }
+
+  addSearchItem(searchItem: string) : void {
+    this.addTag(searchItem);
+    this.isSearching = false;
   }
 }
