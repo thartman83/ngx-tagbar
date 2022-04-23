@@ -214,8 +214,7 @@ describe('TagbarComponent', () => {
 	   expect(component.tags.indexOf(tag)).not.toEqual(-1);
 	   expect(component.tags.indexOf(otherTag)).not.toEqual(-1);
 	   
-	   const de = fixture.debugElement;	 
-	   //	   const btn = de.query(By.css('.tagbar--tag-list:first-child>.tagbar--tag-selected-remove-tag'))
+	   const de = fixture.debugElement;
 	   const btn = de.query(By.css('.tagbar--tag-selected-remove-tag-btn')).
 	     nativeElement;
 
@@ -327,7 +326,104 @@ describe('TagbarComponent', () => {
 	   
 	   fixture.detectChanges();
 	   expect(component.isSearching).toBeTrue();
-	 }));	 
-    });    
+	 }));
+      
+      it(`when a static source is present
+          when the tagbar is searching
+          up and down arrows should highligh searchable values`,
+	 fakeAsync( () => {
+	   const de = fixture.debugElement;	 
+	   const i = de.query(By.css('.tagbar--input')).nativeElement;
+	   const searchTags = ['foo','bar','baz'];
+	   const focusedClass = '.tagbar--search-list-item-active'
+
+	   component.source = searchTags;
+
+	   component.isSearching = true;
+	   fixture.detectChanges();
+
+	   component.onFocus('');
+	   fixture.detectChanges();
+	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('foo');
+	   
+	   component.onArrowDown('');
+	   fixture.detectChanges();
+	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('bar');
+
+	   component.onArrowDown('');
+	   fixture.detectChanges();
+	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('baz');
+
+	   component.onArrowUp('');
+	   fixture.detectChanges();
+	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('bar');
+	 }));
+
+      it(`when a static source is present
+          when the tagbar is searching
+          when the enter key is pressed 
+should select a hilighted search option`,
+	 fakeAsync( () => {
+	   const de = fixture.debugElement;	 
+	   const i = de.query(By.css('.tagbar--input')).nativeElement;
+	   const searchTags = ['foo','bar','baz'];
+
+	   component.source = searchTags;
+
+	   component.onFocus('')
+	   fixture.detectChanges();
+
+	   component.onEnterKey('');
+	   fixture.detectChanges();
+
+	   expect(component.tags).toContain('foo');
+	   expect(component.isSearching).toBeFalse();
+
+	   component.onFocus('');
+	   component.onArrowDown('');
+	   component.onEnterKey('');
+
+	   expect(component.tags).toContain('bar');
+	   expect(component.isSearching).toBeFalse();
+	 }));
+    });
+
+    it(`when a static source is present
+        when the tagbar is not search
+        when the down key is pressed
+        when minimum input is 0
+        should show the search tags`,
+       fakeAsync(()=> {
+	 const de = fixture.debugElement;	 
+	 const i = de.query(By.css('.tagbar--input')).nativeElement;
+	 const searchTags = ['foo','bar','baz'];
+
+	 component.source = searchTags;
+	 expect(component.isSearching).toBeFalse();
+
+	 component.onArrowDown('');
+	 tick();
+	 fixture.detectChanges();
+	 expect(component.isSearching).toBeTrue();
+	 
+       }));
+
+    it(`when a static source is present
+        when the tagbar is searching
+        when the escape key is preseed
+        should hide the search`,
+       fakeAsync( () => {
+	 const de = fixture.debugElement;	 
+	 const i = de.query(By.css('.tagbar--input')).nativeElement;
+	 const searchTags = ['foo','bar','baz'];
+
+	 component.source = searchTags;
+	 component.isSearching = true;
+
+	 fixture.detectChanges();
+
+	 component.onEscape();
+	 expect(component.isSearching).toBeFalse();
+       }));
   });
 });

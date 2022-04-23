@@ -12,8 +12,11 @@
 
     </ul>
     <input #newtag class="tagbar--input" name="tagSearch" type="text"
-           (keydown.enter)="addTag(newtag.value); newtag.value=''"
+	   (keydown.enter)="onEnterKey(newtag.value); newtag.value=''"
 	   (keydown.backspace)="deleteNewestTag(newtag.value)"
+	   (keydown.arrowdown)="onArrowDown(newtag.value)"
+	   (keydown.arrowup)="onArrowUp(newtag.value)"
+	   (keydown.escape)="onEscape()"
            (blur)="onBlur(newtag.value)"
 	   (focus)="onFocus(newtag.value)"
            autocorrect="off" autocomplete="off" />
@@ -22,8 +25,9 @@
 <ng-container *ngIf="isSearching">
   <div class="tagbar--search">
     <ul class="tagbar--search-list">
-      <li class="tagbar--search-list-item"   
-	  *ngFor="let searchTag of _searchTags"
+      <li class="tagbar--search-list-item"
+	  *ngFor="let searchTag of _searchTags; let i = index"
+	  [class.tagbar--search-list-item-active]="_searchIndex === i"
 	  (click)="addSearchItem(searchTag)">{{searchTag}}</li>
     </ul>
   </div>

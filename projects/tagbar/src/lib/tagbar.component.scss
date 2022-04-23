@@ -84,6 +84,10 @@ $tag-color: var(--tag-color);
                     background-color: #00f;
                     color: #fff;
                 }
+		&-active {
+		    background-color: #00f;
+		    color: #fff;
+		}
                 cursor: pointer;
                 list-style: none;
                 padding: .25rem;
