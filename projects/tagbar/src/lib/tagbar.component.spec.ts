@@ -425,5 +425,24 @@ should select a hilighted search option`,
 	 component.onEscape();
 	 expect(component.isSearching).toBeFalse();
        }));
+
+    it(`when a static source is present
+        when the tagbar is searching
+        when the input field loses focus
+        should hide the search`,
+       fakeAsync( () => {
+	 const de = fixture.debugElement;	 
+	 const i = de.query(By.css('.tagbar--input')).nativeElement;
+	 const searchTags = ['foo','bar','baz'];
+
+	 component.source = searchTags;
+	 component.isSearching = true;
+
+	 fixture.detectChanges();
+	 expect(component.isSearching).toBeTrue();
+
+	 component.onBlur('');
+	 expect(component.isSearching).toBeFalse();	 
+       }));
   });
 });

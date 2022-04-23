@@ -101,7 +101,10 @@ export class TagbarComponent implements OnInit {
     let tag = newTag;
     
     if(tag !== "")
-      this.addTag(tag);    
+      this.addTag(tag);
+
+    if(this.isSearching)
+      this.isSearching = false;
   }
 
   deleteNewestTag(newTag: string) {
