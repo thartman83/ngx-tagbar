@@ -28,7 +28,7 @@
       <li class="tagbar--search-list-item"
 	  *ngFor="let searchTag of _searchTags; let i = index"
 	  [class.tagbar--search-list-item-active]="_searchIndex === i"
-	  (click)="addSearchItem(searchTag)">{{searchTag}}</li>
+	  (mouseDown)="addSearchItem(searchTag)">{{searchTag}}</li>
     </ul>
   </div>
 </ng-container>

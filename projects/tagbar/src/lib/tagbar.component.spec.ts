@@ -362,7 +362,7 @@ describe('TagbarComponent', () => {
       it(`when a static source is present
           when the tagbar is searching
           when the enter key is pressed 
-should select a hilighted search option`,
+          should select a hilighted search option`,
 	 fakeAsync( () => {
 	   const de = fixture.debugElement;	 
 	   const i = de.query(By.css('.tagbar--input')).nativeElement;
@@ -370,14 +370,13 @@ should select a hilighted search option`,
 
 	   component.source = searchTags;
 
-	   component.onFocus('')
-	   fixture.detectChanges();
-
+	   component.onFocus('');
 	   component.onEnterKey('');
 	   fixture.detectChanges();
 
 	   expect(component.tags).toContain('foo');
 	   expect(component.isSearching).toBeFalse();
+	   expect(component.searchIndex()).toBe(-1);
 
 	   component.onFocus('');
 	   component.onArrowDown('');
@@ -385,6 +384,7 @@ should select a hilighted search option`,
 
 	   expect(component.tags).toContain('bar');
 	   expect(component.isSearching).toBeFalse();
+	   expect(component.searchIndex()).toBe(-1);
 	 }));
     });
 
@@ -405,7 +405,7 @@ should select a hilighted search option`,
 	 tick();
 	 fixture.detectChanges();
 	 expect(component.isSearching).toBeTrue();
-	 
+	 expect(component.searchIndex()).toBe(0);
        }));
 
     it(`when a static source is present
@@ -424,6 +424,7 @@ should select a hilighted search option`,
 
 	 component.onEscape();
 	 expect(component.isSearching).toBeFalse();
+	 expect(component.searchIndex()).toBe(-1);
        }));
 
     it(`when a static source is present
@@ -443,6 +444,29 @@ should select a hilighted search option`,
 
 	 component.onBlur('');
 	 expect(component.isSearching).toBeFalse();	 
+       }));
+
+    it(`when a static source is present
+        when the tagbar is searching
+        when a search item is clicked on
+        should add the tag`,
+       fakeAsync( () => {
+	 const de = fixture.debugElement;	 
+	 const i = de.query(By.css('.tagbar--input')).nativeElement;
+	 const searchTags = ['foo','bar','baz'];
+
+	 component.source = searchTags;
+	 component.onFocus('');
+
+	 tick();
+	 
+	 fixture.detectChanges();
+	 expect(component.isSearching).toBeTrue();
+
+	 const li = de.query(By.css('.tagbar--search-list-item')).nativeElement;
+	 li.click();
+
+	 expect(component.tags).toContain('foo');
        }));
   });
 });

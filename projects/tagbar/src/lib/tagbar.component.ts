@@ -16,7 +16,7 @@ export class TagbarComponent implements OnInit {
   private _maxTags: number = -1;
   private _minimumInput: number = 0;
   private _searchTags: string[] = null;
-  private _searchIndex: number = 0;
+  private _searchIndex: number = -1;
   
   isSearching: boolean = false;
 
@@ -44,7 +44,7 @@ export class TagbarComponent implements OnInit {
   @Input('minimumInput')
   get minimumInput(): number { return this._minimumInput; }
   set minimumInput(minimumInput: number) { this._minimumInput = minimumInput ;}
-  
+
   constructor() { }
 
   ngOnInit(): void { }
@@ -55,6 +55,7 @@ export class TagbarComponent implements OnInit {
 
     if(this.isSearching) {
       this.isSearching = false;
+      this._searchIndex = -1;
     }
     
 
@@ -96,6 +97,10 @@ export class TagbarComponent implements OnInit {
     }
   }
 
+  searchIndex(): number {
+    return this._searchIndex;
+  }
+
   ///**  event functions  ***///
   onBlur(newTag: string) {
     let tag = newTag;
@@ -125,6 +130,7 @@ export class TagbarComponent implements OnInit {
   
   onFocus(needle: string) : void {
     if(this.source.length !== 0 && needle.length >= this.minimumInput) {
+      this._searchIndex = 0;
       this.displaySearchTags(this.source as string[]);
     }
   }
@@ -148,6 +154,7 @@ export class TagbarComponent implements OnInit {
 
   onEscape(): void {
     this.isSearching = false;
+    this._searchIndex = -1;
   }
 
   displaySearchTags(searchTags: string[]) {
@@ -156,6 +163,7 @@ export class TagbarComponent implements OnInit {
   }
 
   addSearchItem(searchItem: string) : void {
+    console.log('adding' + searchItem);
     this.addTag(searchItem);
     this.isSearching = false;
   }
