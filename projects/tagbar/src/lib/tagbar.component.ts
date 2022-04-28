@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostBinding, HostListener } from '@angular/core';
+import { Component, OnInit, Input, HostBinding } from '@angular/core';
 
 const defaultTagColor = '#666666'
 
@@ -49,32 +49,30 @@ export class TagbarComponent implements OnInit {
 
   ngOnInit(): void { }
 
+  /// *** Public Methods *** ///
   addTag(newTag: string) {
     // strip the whitespace from the beginning and ending of the tag
     newTag = newTag.trim();
 
-    if(this.isSearching) {
-      this.isSearching = false;
-      this._searchIndex = -1;
-    }
+    // Stop searching if we are actively doing so
+    if(this.isSearching)
+      this.closeSearch();
     
-
     // Don't add a blank tag
     if(newTag === '')
       return;
 
     // Don't add more tags than maxTags
-    if(this.maxTags !== -1 && this.maxTags === this.tags.length) {
+    if(this.maxTags !== -1 && this.maxTags === this.tags.length) 
       return;
-    }
 
     // Don't add a tag that already exists
     const idx = this.findTag(newTag);
-
     if(idx > -1) {
       return;
     }
 
+    // Add the tag
     this._tags.push(newTag);
   }
 
@@ -101,7 +99,13 @@ export class TagbarComponent implements OnInit {
     return this._searchIndex;
   }
 
-  ///**  event functions  ***///
+  ///*** Private Methods ***///
+  private closeSearch(): void {
+    this.isSearching = false;
+    this._searchIndex = -1;
+  }
+
+  ///***  event functions  ***///
   onBlur(newTag: string) {
     let tag = newTag;
     
@@ -109,7 +113,7 @@ export class TagbarComponent implements OnInit {
       this.addTag(tag);
 
     if(this.isSearching)
-      this.isSearching = false;
+      this.closeSearch();
   }
 
   deleteNewestTag(newTag: string) {
@@ -152,9 +156,12 @@ export class TagbarComponent implements OnInit {
     }
   }
 
+  onHoverSearchItem(idx: number) : void {
+    this._searchIndex = idx;
+  }
+
   onEscape(): void {
-    this.isSearching = false;
-    this._searchIndex = -1;
+    this.closeSearch();
   }
 
   displaySearchTags(searchTags: string[]) {
@@ -163,8 +170,6 @@ export class TagbarComponent implements OnInit {
   }
 
   addSearchItem(searchItem: string) : void {
-    console.log('adding' + searchItem);
     this.addTag(searchItem);
-    this.isSearching = false;
   }
 }

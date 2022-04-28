@@ -463,10 +463,40 @@ describe('TagbarComponent', () => {
 	 fixture.detectChanges();
 	 expect(component.isSearching).toBeTrue();
 
-	 const li = de.query(By.css('.tagbar--search-list-item')).nativeElement;
-	 li.click();
-
+	 const li = de.query(By.css('.tagbar--search-list-item'));
+	 li.triggerEventHandler('mousedown','');
+	 fixture.detectChanges();
+	 
 	 expect(component.tags).toContain('foo');
+       }));
+
+    it(`when a static source is present
+        when the tagbar is searching
+        when a search item is already selected using the keyboard
+        when the mouse hovers over another item
+        should highlight only the hovered item`,
+       fakeAsync( () => {
+	 const de = fixture.debugElement;	 
+	 const i = de.query(By.css('.tagbar--input')).nativeElement;
+	 const searchTags = ['foo','bar','baz'];
+
+	 component.source = searchTags;
+	 component.onFocus('');
+
+	 tick();
+	 
+	 fixture.detectChanges();
+	 expect(component.isSearching).toBeTrue();
+
+	 const li = de.query(By.css('.tagbar--search-list-item-active'));
+	 const otherLi = de.query(By.css('.tagbar--search-list-item-active+li'));
+
+	 otherLi.triggerEventHandler('mouseover', '');
+	 fixture.detectChanges();	 
+	 
+	 expect(li.classes['tagbar--search-list-item-active']).toBeFalsy();
+	 expect(otherLi.classes['tagbar--search-list-item-active']).toBeTrue();
+
        }));
   });
 });
