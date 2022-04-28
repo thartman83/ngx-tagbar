@@ -10,5 +10,6 @@ export class AppComponent {
   codeBlock1 = `<ngx-tagbar></ngx-tagbar>`;
   codeBlock2 = `<ngx-tagbar tag-color="#00F" ></ngx-tagbar>`;
   codeBlock3 = `<ngx-tagbar tags="['foo','bar','baz']"></ngx-tagbar>`;
-  codeBlock4 = `<ngx-tagbar tags="['foo','bar'] maxTags=3></ngx-tagbar>`;
+  codeBlock4 = `<ngx-tagbar [tags]="['foo','bar']" [maxTags]="3"></ngx-tagbar>`;
+  codeBlock5 = `<ngx-tagbar [source]="['foo','bar','baz']"></ngx-tagbar>`;
 }
