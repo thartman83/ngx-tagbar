@@ -27,6 +27,7 @@
     <ul class="tagbar--search-list">
       <li class="tagbar--search-list-item"
 	  *ngFor="let searchTag of _searchTags; let i = index"
+	  [class.tagbar--search-list-item-disabled]="findTag(searchTag) !== -1"
 	  [class.tagbar--search-list-item-active]="_searchIndex === i"
 	  (mouseover)="onHoverSearchItem(i)"
 	  (mousedown)="addSearchItem(searchTag)">{{searchTag}}</li>

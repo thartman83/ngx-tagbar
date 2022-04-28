@@ -84,6 +84,9 @@ $tag-color: var(--tag-color);
 		    background-color: #00f;
 		    color: #fff;
 		}
+		&-disabled {
+		    color: #888;
+		}
                 cursor: pointer;
                 list-style: none;
                 padding: .25rem;

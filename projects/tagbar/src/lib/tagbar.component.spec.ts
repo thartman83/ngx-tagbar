@@ -498,5 +498,31 @@ describe('TagbarComponent', () => {
 	 expect(otherLi.classes['tagbar--search-list-item-active']).toBeTrue();
 
        }));
+
+    it(`when a static source is present
+        when the tagbar is searching
+        when an element already exists in the tagbar
+        should display as disabled`,
+       fakeAsync( () => {
+	 const de = fixture.debugElement;	 
+	 const i = de.query(By.css('.tagbar--input')).nativeElement;
+	 const searchTags = ['foo','bar','baz'];
+
+	 component.source = searchTags;
+	 component.onFocus('');
+	 tick();
+	 fixture.detectChanges();
+
+	 const li = de.query(By.css('.tagbar--search-list-item-active'));
+	 expect(li).toBeTruthy();
+	 
+	 component.addSearchItem('foo');
+	 component.onFocus('');
+	 tick();
+	 fixture.detectChanges();
+
+	 const sameLi = de.query(By.css('.tagbar--search-list-item-active'));
+	 expect(sameLi.classes['tagbar--search-list-item-disabled']).toBeTruthy();
+       }));
   });
 });
