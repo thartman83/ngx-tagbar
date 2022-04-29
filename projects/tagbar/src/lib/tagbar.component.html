@@ -17,7 +17,7 @@
 	   (keydown.arrowdown)="onArrowDown(newtag.value)"
 	   (keydown.arrowup)="onArrowUp(newtag.value)"
 	   (keydown.escape)="onEscape()"
-           (blur)="onBlur(newtag.value)"
+           (blur)="onBlur(newtag.value); newtag.value=''"
 	   (focus)="onFocus(newtag.value)"
            autocorrect="off" autocomplete="off" />
   </span>

@@ -443,7 +443,8 @@ describe('TagbarComponent', () => {
 	 expect(component.isSearching).toBeTrue();
 
 	 component.onBlur('');
-	 expect(component.isSearching).toBeFalse();	 
+	 expect(component.isSearching).toBeFalse();
+	 expect(i.value).toBe('');
        }));
 
     it(`when a static source is present
