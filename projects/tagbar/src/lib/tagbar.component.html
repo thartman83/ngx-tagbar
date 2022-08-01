@@ -12,12 +12,10 @@
 
     </ul>
     <input #newtag class="tagbar--input" name="tagSearch" type="text"
-	   (keydown.enter)="onEnterKey(newtag.value); newtag.value=''"
-	   (keydown.backspace)="deleteNewestTag(newtag.value)"
-	   (keydown.arrowdown)="onArrowDown(newtag.value)"
-	   (keydown.arrowup)="onArrowUp(newtag.value)"
-	   (keydown.escape)="onEscape()"
-           (blur)="onBlur(newtag.value); newtag.value=''"
+	   [(ngModel)]="inputTag"
+	   (keydown)="onKeyDown($event, newtag.value)"
+	   (keyup)="onKeyDown($event, newtag.value)"
+           (blur)="onBlur(newtag.value)"
 	   (focus)="onFocus(newtag.value)"
            autocorrect="off" autocomplete="off" />
   </span>

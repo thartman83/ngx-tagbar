@@ -8,7 +8,6 @@ const defaultTagColor = '#666666'
   styleUrls: ['./tagbar.component.scss' ]
 })
 export class TagbarComponent implements OnInit {
-
   private _tags: string[] = [];
   private _tagColor: string = defaultTagColor;
   private _limited: boolean = false;
@@ -19,6 +18,7 @@ export class TagbarComponent implements OnInit {
   private _searchIndex: number = -1;
   
   isSearching: boolean = false;
+  inputTag = '';
 
   @HostBinding("style.--tag-color")
   @Input('tag-color')
@@ -74,6 +74,9 @@ export class TagbarComponent implements OnInit {
 
     // Add the tag
     this._tags.push(newTag);
+
+    // clear the text input
+    this.clear();
   }
 
   removeTag(tag: string) {
@@ -99,6 +102,10 @@ export class TagbarComponent implements OnInit {
     return this._searchIndex;
   }
 
+  clear(): void {
+    this.inputTag = '';
+  }
+
   ///*** Private Methods ***///
   private closeSearch(): void {
     this.isSearching = false;
@@ -116,12 +123,49 @@ export class TagbarComponent implements OnInit {
       this.closeSearch();
   }
 
-  deleteNewestTag(newTag: string) {
-    if(newTag !== "") {
+  deleteNewestTag(needle: string): void {
+    if(needle !== "") {
       return;
     }
 
     this._tags.splice(this._tags.length-1, 1)
+  }
+
+  onKeyDown(event: KeyboardEvent, needle: string): void {
+    switch(event.key) {
+      case "Enter":
+	this.onEnterKey(needle);
+	break;
+      case "Backspace":
+	this.deleteNewestTag(needle);
+	break;
+      case "ArrowDown":
+	this.onArrowDown(needle);
+	break;
+      case "ArrowUp":
+	this.onArrowUp(needle);
+	break;
+      case "Escape":
+	this.onEscape();
+	break;
+      default:
+	break;
+    }        
+  }
+
+  onKeyUp(event: KeyboardEvent, needle: string) : void {
+    switch(event.key) {
+      case "Enter":
+      case "Backspace":
+      case "ArrowDown":
+      case "ArrowUp":
+      case "Escape":
+      default:
+	if(this.shouldSearch(needle)) {
+	  this.displaySearchTags(this.source as string[]);
+	  this._searchIndex = this.findFirstSearchItem(needle);
+	}
+    }
   }
 
   onEnterKey(needle: string) : void {
@@ -133,15 +177,14 @@ export class TagbarComponent implements OnInit {
   }
   
   onFocus(needle: string) : void {
-    if(this.source.length !== 0 && needle.length >= this.minimumInput) {
+    if(this.shouldSearch(needle)) {
       this._searchIndex = 0;
       this.displaySearchTags(this.source as string[]);
     }
   }
 
   onArrowDown(needle: string) : void {
-    if(this.source.length !== 0 && needle.length >= this.minimumInput &&
-       !this.isSearching) {
+    if(this.shouldSearch(needle)) {
       this.displaySearchTags(this.source as string[]);
     }
     
@@ -162,6 +205,14 @@ export class TagbarComponent implements OnInit {
 
   onEscape(): void {
     this.closeSearch();
+  }
+
+  findFirstSearchItem(needle: string) : number {
+    return this._searchTags.findIndex( (n) => n.indexOf(needle) !== -1);
+  }
+
+  shouldSearch(needle: string) : boolean {
+    return this.source.length !== 0 && needle.length >= this.minimumInput;
   }
 
   displaySearchTags(searchTags: string[]) {

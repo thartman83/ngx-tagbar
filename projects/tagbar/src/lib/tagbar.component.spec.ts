@@ -1,5 +1,6 @@
 import { Testability } from '@angular/core';
 import { ComponentFixture, TestBed, tick, fakeAsync, async } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { TagbarComponent } from './tagbar.component';
 
@@ -136,7 +137,8 @@ describe('TagbarComponent', () => {
 
     beforeEach(async() => {
       await TestBed.configureTestingModule({
-	declarations: [TagbarComponent]
+	declarations: [TagbarComponent],
+	imports: [FormsModule]
       }).compileComponents();
     });
 
@@ -158,22 +160,28 @@ describe('TagbarComponent', () => {
       // add the tag
       i.value = tagname;
       i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' } ));
+      fixture.detectChanges();
       
       expect(component.tags.length).toEqual(1);
-      expect(component.tags).toContain(tagname);      
+      expect(component.tags).toContain(tagname);
+      expect(component.inputTag).toBe('');
     });
 
-    it('should add a tag when the input field has a value and it losses focus', () => {
-      const de = fixture.debugElement;
-      const tagname = 'foobar';
-      const i = de.query(By.css('.tagbar--input')).nativeElement;
-
-      i.value = tagname;
-      i.dispatchEvent(new Event('blur'));
-      
-      expect(component.tags.length).toEqual(1);
-      expect(component.tags).toContain(tagname);      
-    });
+    it('should add a tag when the input field has a value and it losses focus',
+       fakeAsync( () => {
+	 const de = fixture.debugElement;
+	 const tagname = 'foobar';
+	 const i = de.query(By.css('.tagbar--input')).nativeElement;
+	 
+	 i.value = tagname;
+	 i.dispatchEvent(new Event('blur'));
+	 
+	 expect(component.tags.length).toEqual(1);
+	 expect(component.tags).toContain(tagname);
+	 
+	 fixture.detectChanges();
+	 expect(component.inputTag).toBe('');
+       }));
 
     it('should focus the input element when the component is clicked on', () => {
       const de = fixture.debugElement;
@@ -241,7 +249,7 @@ describe('TagbarComponent', () => {
 
 	   // simulate a backspace message
 	   i.dispatchEvent(new KeyboardEvent('keydown', {
-	     "key": "backspace"
+	     "key": "Backspace"
 	   }));
 	   tick();
 	   fixture.detectChanges();
@@ -346,15 +354,21 @@ describe('TagbarComponent', () => {
 	   fixture.detectChanges();
 	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('foo');
 	   
-	   component.onArrowDown('');
+	   i.dispatchEvent(new KeyboardEvent('keydown', {
+	     "key": "ArrowDown"
+	   }));
 	   fixture.detectChanges();
 	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('bar');
 
-	   component.onArrowDown('');
+	   i.dispatchEvent(new KeyboardEvent('keydown', {
+	     "key": "ArrowDown"
+	   }));
 	   fixture.detectChanges();
 	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('baz');
 
-	   component.onArrowUp('');
+	   i.dispatchEvent(new KeyboardEvent('keydown', {
+	     "key": "ArrowUp"
+	   }));
 	   fixture.detectChanges();
 	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('bar');
 	 }));
@@ -371,7 +385,9 @@ describe('TagbarComponent', () => {
 	   component.source = searchTags;
 
 	   component.onFocus('');
-	   component.onEnterKey('');
+	   i.dispatchEvent(new KeyboardEvent('keydown', {
+	     "key": "Enter"
+	   }));
 	   fixture.detectChanges();
 
 	   expect(component.tags).toContain('foo');
@@ -380,6 +396,9 @@ describe('TagbarComponent', () => {
 
 	   component.onFocus('');
 	   component.onArrowDown('');
+	   i.dispatchEvent(new KeyboardEvent('keydown', {
+	     "key": "Enter"
+	   }));
 	   component.onEnterKey('');
 
 	   expect(component.tags).toContain('bar');
@@ -525,5 +544,27 @@ describe('TagbarComponent', () => {
 	 const sameLi = de.query(By.css('.tagbar--search-list-item-active'));
 	 expect(sameLi.classes['tagbar--search-list-item-disabled']).toBeTruthy();
        }));
+
+    it(`when a static source is present
+        when the tagbar is searching
+        when the letter 'b' is pressed
+        should highlight the first search eleemnt with the letter b in it`,
+       fakeAsync(() => {
+	 const de = fixture.debugElement;	 
+	 const i = de.query(By.css('.tagbar--input')).nativeElement;
+	 const searchTags = ['foo','bar','baz'];
+
+	 component.source = searchTags;
+	 
+	 component.onFocus('');
+	 i.dispatchEvent(new KeyboardEvent('keyup', {
+	   "key": "b"
+	 }));
+	 fixture.detectChanges();
+
+	 const it = de.query(By.css('.class.tagbar--search-list-item-active'));
+	 expect(it.nativeElement.value).toEqual('bar');
+       }));
+    
   });
 });
