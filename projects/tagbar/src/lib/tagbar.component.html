@@ -14,7 +14,6 @@
     <input #newtag class="tagbar--input" name="tagSearch" type="text"
 	   [(ngModel)]="inputTag"
 	   (keydown)="onKeyDown($event, newtag.value)"
-	   (keyup)="onKeyDown($event, newtag.value)"
            (blur)="onBlur(newtag.value)"
 	   (focus)="onFocus(newtag.value)"
            autocorrect="off" autocomplete="off" />

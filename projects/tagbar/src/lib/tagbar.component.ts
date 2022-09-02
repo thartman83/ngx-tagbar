@@ -124,20 +124,19 @@ export class TagbarComponent implements OnInit {
   }
 
   deleteNewestTag(needle: string): void {
-    if(needle !== "") {
-      return;
-    }
-
     this._tags.splice(this._tags.length-1, 1)
   }
 
-  onKeyDown(event: KeyboardEvent, needle: string): void {
+  onKeyDown(event: KeyboardEvent, needle: string): void {    
+    
     switch(event.key) {
       case "Enter":
 	this.onEnterKey(needle);
 	break;
       case "Backspace":
-	this.deleteNewestTag(needle);
+	let inputEL = event.target as HTMLInputElement;
+	if(inputEL.selectionStart === 0)
+	  this.deleteNewestTag(needle);
 	break;
       case "ArrowDown":
 	this.onArrowDown(needle);
@@ -149,6 +148,9 @@ export class TagbarComponent implements OnInit {
 	this.onEscape();
 	break;
       default:
+	let newNeedle = needle + event.key;
+	
+	this.searchSource(newNeedle);	
 	break;
     }        
   }
@@ -161,10 +163,7 @@ export class TagbarComponent implements OnInit {
       case "ArrowUp":
       case "Escape":
       default:
-	if(this.shouldSearch(needle)) {
-	  this.displaySearchTags(this.source as string[]);
-	  this._searchIndex = this.findFirstSearchItem(needle);
-	}
+	break;
     }
   }
 
@@ -218,6 +217,13 @@ export class TagbarComponent implements OnInit {
   displaySearchTags(searchTags: string[]) {
     this.isSearching = true;
     this._searchTags = searchTags;
+  }
+
+  searchSource(needle: string) : void {
+    if(this.shouldSearch(needle)) {
+      this.displaySearchTags(this.source as string[]);
+      this._searchIndex = this.findFirstSearchItem(needle);
+    }
   }
 
   addSearchItem(searchItem: string) : void {

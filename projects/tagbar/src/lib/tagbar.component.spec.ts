@@ -557,13 +557,13 @@ describe('TagbarComponent', () => {
 	 component.source = searchTags;
 	 
 	 component.onFocus('');
-	 i.dispatchEvent(new KeyboardEvent('keyup', {
+	 i.dispatchEvent(new KeyboardEvent('keydown', {
 	   "key": "b"
 	 }));
 	 fixture.detectChanges();
 
-	 const it = de.query(By.css('.class.tagbar--search-list-item-active'));
-	 expect(it.nativeElement.value).toEqual('bar');
+	 const it = de.query(By.css('.tagbar--search-list-item-active'));
+	 expect(it.nativeElement.innerText).toEqual('bar');
        }));
     
   });
