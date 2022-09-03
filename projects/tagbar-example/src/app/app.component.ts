@@ -12,4 +12,9 @@ export class AppComponent {
   codeBlock3 = `<ngx-tagbar tags="['foo','bar','baz']"></ngx-tagbar>`;
   codeBlock4 = `<ngx-tagbar [tags]="['foo','bar']" [maxTags]="3"></ngx-tagbar>`;
   codeBlock5 = `<ngx-tagbar [source]="['foo','bar','baz']"></ngx-tagbar>`;
+  codeBlock6 = `<ngx-tagbar [source]="sourceFn"></ngx-tagbar>`;
+
+  sourceFn(needle: string): string[] {
+    return ['bob','bib','bub'];
+  }
 }

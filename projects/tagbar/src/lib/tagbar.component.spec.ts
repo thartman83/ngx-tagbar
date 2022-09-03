@@ -565,6 +565,22 @@ describe('TagbarComponent', () => {
 	 const it = de.query(By.css('.tagbar--search-list-item-active'));
 	 expect(it.nativeElement.innerText).toEqual('bar');
        }));
-    
+
+    it(`when a function source is present
+        when the tagbar is searching
+        when minimum input is 0
+        when the tag bar gets focus
+        should display tags returned from source function`,
+       fakeAsync(() => {
+
+	 const de = fixture.debugElement;
+	 const i = de.query(By.css('.tagbar--input')).nativeElement;
+
+	 component.source = (needle) => { return ['bob', 'bib', 'bub']; }
+	 component.onFocus('');
+	 fixture.detectChanges();
+
+	 expect(component.isSearching).toBeTrue();
+       }));
   });
 });

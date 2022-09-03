@@ -178,13 +178,13 @@ export class TagbarComponent implements OnInit {
   onFocus(needle: string) : void {
     if(this.shouldSearch(needle)) {
       this._searchIndex = 0;
-      this.displaySearchTags(this.source as string[]);
+      this.displaySearchTags(needle);
     }
   }
 
   onArrowDown(needle: string) : void {
     if(this.shouldSearch(needle)) {
-      this.displaySearchTags(this.source as string[]);
+      this.displaySearchTags(needle);
     }
     
     if(this._searchIndex < (this._searchTags.length - 1)) {
@@ -211,17 +211,30 @@ export class TagbarComponent implements OnInit {
   }
 
   shouldSearch(needle: string) : boolean {
-    return this.source.length !== 0 && needle.length >= this.minimumInput;
+    return (typeof this.source === 'function' || this.source.length !== 0)
+      && needle.length >= this.minimumInput;
   }
 
-  displaySearchTags(searchTags: string[]) {
+  displaySearchTags(needle) {
     this.isSearching = true;
-    this._searchTags = searchTags;
+
+    if(typeof this.source === 'function') {
+      this._searchTags = this.source(needle);
+    } else {
+      this._searchTags = this.source;
+    }    
   }
 
   searchSource(needle: string) : void {
+
     if(this.shouldSearch(needle)) {
-      this.displaySearchTags(this.source as string[]);
+
+      if(typeof this.source === 'function') {
+	this.displaySearchTags(needle);
+      } else {
+	this.displaySearchTags(needle);
+      }
+      
       this._searchIndex = this.findFirstSearchItem(needle);
     }
   }
