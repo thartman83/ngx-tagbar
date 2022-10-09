@@ -1,33 +1,34 @@
-<span class="tagbar--parent" (click)="newtag.focus()" (focus)="newtag.focus()">
-  <span class="tagbar--input-group">
+<div class="tagbar--main">
+  <span class="tagbar--parent" (click)="newtag.focus()" (focus)="newtag.focus()">
+    <span class="tagbar--input-group">
+      <ul class="tagbar--tag-list">
+        <div class="tagbar--tag-selected" *ngFor="let tag of tags">
+          <li class="tagbar--tag-selected-text" >{{tag}}</li>
+          <span class="tagbar--tag-selected-remove-tag">
+	          <button type="button" class="tagbar--tag-selected-remove-tag-btn"
+                    (click)="removeTag(tag)">X</button>
+          </span>
+        </div>
 
-    <ul class="tagbar--tag-list">
-      <div class="tagbar--tag-selected" *ngFor="let tag of tags">
-        <li class="tagbar--tag-selected-text" >{{tag}}</li>
-        <span class="tagbar--tag-selected-remove-tag">
-	        <button type="button" class="tagbar--tag-selected-remove-tag-btn"
-                  (click)="removeTag(tag)">X</button>
-        </span>
-      </div>
-
-    </ul>
-    <input #newtag class="tagbar--input" name="tagSearch" type="text"
-	   [(ngModel)]="inputTag"
-	   (keydown)="onKeyDown($event, newtag.value)"
-           (blur)="onBlur(newtag.value)"
-	   (focus)="onFocus(newtag.value)"
-           autocorrect="off" autocomplete="off" />
+      </ul>
+      <input #newtag class="tagbar--input" name="tagSearch" type="text"
+	           [(ngModel)]="inputTag"
+	           (keydown)="onKeyDown($event, newtag.value)"
+             (blur)="onBlur(newtag.value)"
+	           (focus)="onFocus(newtag.value)"
+             autocorrect="off" autocomplete="off" />
+    </span>
   </span>
-</span>
-<ng-container *ngIf="isSearching">
-  <div class="tagbar--search">
-    <ul class="tagbar--search-list">
-      <li class="tagbar--search-list-item"
-	  *ngFor="let searchTag of _searchTags; let i = index"
-	  [class.tagbar--search-list-item-disabled]="findTag(searchTag) !== -1"
-	  [class.tagbar--search-list-item-active]="_searchIndex === i"
-	  (mouseover)="onHoverSearchItem(i)"
-	  (mousedown)="addSearchItem(searchTag)">{{searchTag}}</li>
-    </ul>
-  </div>
-</ng-container>
+  <ng-container *ngIf="isSearching">
+    <div class="tagbar--search">
+      <ul class="tagbar--search-list">
+        <li class="tagbar--search-list-item"
+	          *ngFor="let searchTag of _searchTags; let i = index"
+	          [class.tagbar--search-list-item-disabled]="findTag(searchTag) !== -1"
+	          [class.tagbar--search-list-item-active]="_searchIndex === i"
+	          (mouseover)="onHoverSearchItem(i)"
+	          (mousedown)="addSearchItem(searchTag)">{{searchTag}}</li>
+      </ul>
+    </div>
+  </ng-container>
+</div>
