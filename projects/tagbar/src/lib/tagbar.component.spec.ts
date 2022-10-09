@@ -4,6 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { TagbarComponent } from './tagbar.component';
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 describe('TagbarComponent', () => {
 
   describe(`unit tests`, () => {
@@ -14,131 +18,133 @@ describe('TagbarComponent', () => {
 
     describe('::constructor', () => {
       it('should create', () => {
-	component = new TagbarComponent();
-	component.ngOnInit();
+        component = new TagbarComponent();
+        component.ngOnInit();
 
-	expect(component).toBeTruthy();
+        expect(component).toBeTruthy();
       });
     });
 
     describe('::addTag', () => {
       it(`should add a tag when tag doesn't exist`, () => {
-	component = new TagbarComponent();
-	component.ngOnInit();
+        component = new TagbarComponent();
+        component.ngOnInit();
 
-	let tagName = 'foo';
-	component.addTag(tagName);
-	expect(component.tags.indexOf(tagName)).toBeGreaterThan(-1);
+        let tagName = 'foo';
+        component.addTag(tagName);
+        expect(component.tags.indexOf(tagName)).toBeGreaterThan(-1);
 
 
-	let secondTag = 'bar';
-	component.addTag(secondTag);
-	expect(component.tags.indexOf(secondTag)).toBeGreaterThan(-1);
+        let secondTag = 'bar';
+        component.addTag(secondTag);
+        expect(component.tags.indexOf(secondTag)).toBeGreaterThan(-1);
       });
 
       it(`should not add a tag if the tag already exists`, () => {
-	component = new TagbarComponent();
-	component.tags = Object.assign([], initialTags);
-	component.ngOnInit();
+        component = new TagbarComponent();
+        component.tags = Object.assign([], initialTags);
+        component.ngOnInit();
 
-	let existingTag = initialTags[0];
-	component.addTag(existingTag);
-	expect(component.tags.length).toBe(initialLen);
+        let existingTag = initialTags[0];
+        component.addTag(existingTag);
+        expect(component.tags.length).toBe(initialLen);
       });
 
-      it(`should not add a tag if maxTags is set to 3 and there are 3 tags`, () =>{
-	component = new TagbarComponent();
-	component.tags = Object.assign([], initialTags);
-	component.maxTags = 3;
-	component.ngOnInit();
+      it(`should not add a tag if maxTags is set to 3 and there are 3 tags`, () => {
+        component = new TagbarComponent();
+        component.tags = Object.assign([], initialTags);
+        component.maxTags = 3;
+        component.ngOnInit();
 
-	let newTag = 'bob';
-	component.addTag(newTag);
-	expect(component.tags.length).toEqual(initialLen);
-	expect(component.tags.indexOf(newTag)).toEqual(-1);
+        let newTag = 'bob';
+        component.addTag(newTag);
+        expect(component.tags.length).toEqual(initialLen);
+        expect(component.tags.indexOf(newTag)).toEqual(-1);
       });
 
       it('should not add a blank tag (all whitespace)', () => {
-	component = new TagbarComponent();
-	component.ngOnInit();
+        component = new TagbarComponent();
+        component.ngOnInit();
 
-	let newTag = '	  ';
-	component.addTag(newTag);
-	expect(component.tags.length).toEqual(0);
+        let newTag = '	  ';
+        component.addTag(newTag);
+        expect(component.tags.length).toEqual(0);
       });
 
       it('should trim white space from the beginning and end of tags', () => {
-	component = new TagbarComponent();
-	component.ngOnInit();
+        component = new TagbarComponent();
+        component.ngOnInit();
 
-	let newTag = '	 foo   ';
-	component.addTag(newTag);
-	expect(component.tags.length).toEqual(1);
-	expect(component.tags.indexOf(newTag.trim())).toEqual(0);
+        let newTag = '	 foo   ';
+        component.addTag(newTag);
+        expect(component.tags.length).toEqual(1);
+        expect(component.tags.indexOf(newTag.trim())).toEqual(0);
       });
     });
 
     describe('::removeTag', () => {
       it('should remove a tag when removeTag is called', () => {
-	component = new TagbarComponent();
-	component.tags = Object.assign([], initialTags);
-	component.ngOnInit();
+        component = new TagbarComponent();
+        component.tags = Object.assign([], initialTags);
+        component.ngOnInit();
 
-	let toRemove = 'foo';
-	component.removeTag(toRemove);
-	expect(component.tags.length).toBe(initialTags.length - 1);
-	expect(component.tags.indexOf(toRemove)).toBe(-1);
+        let toRemove = 'foo';
+        component.removeTag(toRemove);
+        expect(component.tags.length).toBe(initialTags.length - 1);
+        expect(component.tags.indexOf(toRemove)).toBe(-1);
       });
 
-      it('should not remove a non-existant tag', () =>{
-	component = new TagbarComponent();
-	component.tags = Object.assign([], initialTags);
-	component.ngOnInit();
+      it('should not remove a non-existant tag', () => {
+        component = new TagbarComponent();
+        component.tags = Object.assign([], initialTags);
+        component.ngOnInit();
 
-	let nonExistingTag = 'bob';
-	component.removeTag(nonExistingTag);
-	expect(component.tags.length).toBe(initialLen);
+        let nonExistingTag = 'bob';
+        component.removeTag(nonExistingTag);
+        expect(component.tags.length).toBe(initialLen);
       });
     });
 
     // getMatchingSourceTags unit tests
-    describe('::getMatchingSourceTags', () => {
+    /*describe('::getMatchingSourceTags', () => {
       it(`should return 2 tags ['bar', 'baz'] called with a 'b'`, () => {
-	component = new TagbarComponent();
-	component.source = Object.assign([], initialTags);
-	component.ngOnInit();
+  component = new TagbarComponent();
+  component.source = Object.assign([], initialTags);
+  component.ngOnInit();
 
-	let res = component.getMatchingSourceTags('b');
-	expect(res.length).toEqual(2);
+  let res = component.getMatchingSourceTags('b');
+  expect(res.length).toEqual(2);
 
-	let fn = (needle: string): string[] => {
-	  return initialTags.filter((tag) => tag.indexOf(needle) !== -1);
-	}
+  let fn = (needle: string): string[] => {
+    return initialTags.filter((tag) => tag.indexOf(needle) !== -1);
+  }
 
-	component.source = fn;
-	expect(component.getMatchingSourceTags('b').length).toEqual(2);
+  component.source = fn;
+  expect(component.getMatchingSourceTags('b').length).toEqual(2);
       });
 
       if(`should return 2 tags ['bar', 'baz']`)
 
-	it('should return nothing when there is no source', () =>{
-	  component = new TagbarComponent();
-	  component.ngOnInit();
+  it('should return nothing when there is no source', () =>{
+    component = new TagbarComponent();
+    component.ngOnInit();
 
-	  let res = component.getMatchingSourceTags('foo');
-	  expect(res.length).toEqual(0);
-	});
-    });
+    let res = component.getMatchingSourceTags('foo');
+    expect(res.length).toEqual(0);
+  });
+  });*/
+
+
   });
 
   describe('functional tests', () => {
     let component: TagbarComponent;
     let fixture: ComponentFixture<TagbarComponent>;
 
-    beforeEach(async() => {
+    beforeEach(async () => {
       await TestBed.configureTestingModule({
-	declarations: [TagbarComponent],
-	imports: [FormsModule]
+        declarations: [TagbarComponent],
+        imports: [FormsModule]
       }).compileComponents();
     });
 
@@ -152,36 +158,36 @@ describe('TagbarComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it(`should add a tag when entered into the keyboard`, () => {      
+    it(`should add a tag when entered into the keyboard`, () => {
       const de = fixture.debugElement;
       const tagname = 'foobar';
       const i = de.query(By.css('.tagbar--input')).nativeElement;
 
       // add the tag
       i.value = tagname;
-      i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' } ));
+      i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
       fixture.detectChanges();
-      
+
       expect(component.tags.length).toEqual(1);
       expect(component.tags).toContain(tagname);
       expect(component.inputTag).toBe('');
     });
 
     it('should add a tag when the input field has a value and it losses focus',
-       fakeAsync( () => {
-	 const de = fixture.debugElement;
-	 const tagname = 'foobar';
-	 const i = de.query(By.css('.tagbar--input')).nativeElement;
-	 
-	 i.value = tagname;
-	 i.dispatchEvent(new Event('blur'));
-	 
-	 expect(component.tags.length).toEqual(1);
-	 expect(component.tags).toContain(tagname);
-	 
-	 fixture.detectChanges();
-	 expect(component.inputTag).toBe('');
-       }));
+      fakeAsync(() => {
+        const de = fixture.debugElement;
+        const tagname = 'foobar';
+        const i = de.query(By.css('.tagbar--input')).nativeElement;
+
+        i.value = tagname;
+        i.dispatchEvent(new Event('blur'));
+
+        expect(component.tags.length).toEqual(1);
+        expect(component.tags).toContain(tagname);
+
+        fixture.detectChanges();
+        expect(component.inputTag).toBe('');
+      }));
 
     it('should focus the input element when the component is clicked on', () => {
       const de = fixture.debugElement;
@@ -211,51 +217,51 @@ describe('TagbarComponent', () => {
     describe(`Removing a tag`, () => {
       it(`when a tage is present
           should remove a tag when the tag 'X' button is clicked`,
-	 fakeAsync( () => {
-	   let tag = 'foo';
-	   let otherTag = 'bar';
-	   component.addTag(tag)
-	   component.addTag(otherTag);
-	   fixture.detectChanges();
-	   
-	   expect(component.tags.length).toEqual(2);
-	   expect(component.tags.indexOf(tag)).not.toEqual(-1);
-	   expect(component.tags.indexOf(otherTag)).not.toEqual(-1);
-	   
-	   const de = fixture.debugElement;
-	   const btn = de.query(By.css('.tagbar--tag-selected-remove-tag-btn')).
-	     nativeElement;
+        fakeAsync(() => {
+          let tag = 'foo';
+          let otherTag = 'bar';
+          component.addTag(tag)
+          component.addTag(otherTag);
+          fixture.detectChanges();
 
-	   btn.click();
-	   tick();
-	   fixture.detectChanges();
-	   
-	   expect(component.tags.length).toEqual(1);
-	   expect(component.tags.indexOf(tag)).toEqual(-1);
-	   expect(component.tags.indexOf(otherTag)).not.toEqual(-1);
-	 }));
+          expect(component.tags.length).toEqual(2);
+          expect(component.tags.indexOf(tag)).not.toEqual(-1);
+          expect(component.tags.indexOf(otherTag)).not.toEqual(-1);
 
-      
+          const de = fixture.debugElement;
+          const btn = de.query(By.css('.tagbar--tag-selected-remove-tag-btn')).
+            nativeElement;
+
+          btn.click();
+          tick();
+          fixture.detectChanges();
+
+          expect(component.tags.length).toEqual(1);
+          expect(component.tags.indexOf(tag)).toEqual(-1);
+          expect(component.tags.indexOf(otherTag)).not.toEqual(-1);
+        }));
+
+
       it(`when a tag is present,
           should remove the left most tag when backspace is pressed`,
-	 fakeAsync( () => {
-	   component.addTag('foo');
-	   component.addTag('bar');
-	 
-	   expect(component.tags.length).toEqual(2);	 
+        fakeAsync(() => {
+          component.addTag('foo');
+          component.addTag('bar');
 
-	   const de = fixture.debugElement;	 
-	   const i = de.query(By.css('.tagbar--input')).nativeElement;
+          expect(component.tags.length).toEqual(2);
 
-	   // simulate a backspace message
-	   i.dispatchEvent(new KeyboardEvent('keydown', {
-	     "key": "Backspace"
-	   }));
-	   tick();
-	   fixture.detectChanges();
+          const de = fixture.debugElement;
+          const i = de.query(By.css('.tagbar--input')).nativeElement;
 
-	   expect(component.tags.length).toEqual(1);
-       }));
+          // simulate a backspace message
+          i.dispatchEvent(new KeyboardEvent('keydown', {
+            "key": "Backspace"
+          }));
+          tick();
+          fixture.detectChanges();
+
+          expect(component.tags.length).toEqual(1);
+        }));
 
     });
 
@@ -263,148 +269,148 @@ describe('TagbarComponent', () => {
 
       it(`when a static source is not present
           should never show the blank source list`, fakeAsync(() => {
-	    const de = fixture.debugElement;
+        const de = fixture.debugElement;
 
-	    expect(de.query(By.css('.tagbar--search'))).toBeNull();
-	    component.onFocus('');
-	    tick();
-	    
-	    expect(de.query(By.css('.tagbar--search'))).toBeNull();
-	  }));
-      
+        expect(de.query(By.css('.tagbar--search'))).toBeNull();
+        component.onFocus('');
+        tick();
+
+        expect(de.query(By.css('.tagbar--search'))).toBeNull();
+      }));
+
       it(`when a static source is present
           when minimumInput is 0
 	  should display the list from the source when input is focused`,
-         fakeAsync( () => {
-	 
-	   const de = fixture.debugElement;	 
-	   const i = de.query(By.css('.tagbar--input')).nativeElement;
-	   const searchTags = ['foo','bar','baz'];
+        fakeAsync(() => {
 
-	   component.source = searchTags;
-	   component.minimumInput = 0;
-	   expect(component.isSearching).toBeFalse();
-	   
-	   // check that the focus event is fired whe the object is clicked on
-	   spyOn(i, 'focus'); 
-	   i.click();
-	   tick();
-	   expect(i.focus).toHaveBeenCalled();
-	   
-	   // Call the method directly
-	   component.onFocus('');
-	 
-	   fixture.detectChanges();
-	   expect(component.isSearching).toBeTrue();
-	   
-	   expect(de.query(By.css('.tagbar--search')).nativeElement).toBeTruthy();
-	   expect(de.query(By.css('.tagbar--search-list')).children.length).toEqual(searchTags.length);	 
-	 }));
+          const de = fixture.debugElement;
+          const i = de.query(By.css('.tagbar--input')).nativeElement;
+          const searchTags = ['foo', 'bar', 'baz'];
+
+          component.source = searchTags;
+          component.minimumInput = 0;
+          expect(component.isSearching).toBeFalse();
+
+          // check that the focus event is fired whe the object is clicked on
+          spyOn(i, 'focus');
+          i.click();
+          tick();
+          expect(i.focus).toHaveBeenCalled();
+
+          // Call the method directly
+          component.onFocus('');
+
+          fixture.detectChanges();
+          expect(component.isSearching).toBeTrue();
+
+          expect(de.query(By.css('.tagbar--search')).nativeElement).toBeTruthy();
+          expect(de.query(By.css('.tagbar--search-list')).children.length).toEqual(searchTags.length);
+        }));
 
       it(`when a static source is present
           when minimumInput is 1
           should not display the list when the input is focued`,
-	 fakeAsync( () => {
-	   const searchTags = ['foo','bar','baz'];
+        fakeAsync(() => {
+          const searchTags = ['foo', 'bar', 'baz'];
 
-	   component.source = searchTags;
-	   component.minimumInput = 1;
-	   expect(component.isSearching).toBeFalse();
+          component.source = searchTags;
+          component.minimumInput = 1;
+          expect(component.isSearching).toBeFalse();
 
-	   component.onFocus('');
-	   expect(component.isSearching).toBeFalse();
-	 }));
+          component.onFocus('');
+          expect(component.isSearching).toBeFalse();
+        }));
 
       it(`when a static source is present
           when minimumInput is 1
           should dipslay the list when the input has 1 character`,
-	 fakeAsync( () => {
-	   const de = fixture.debugElement;	 
-	   const i = de.query(By.css('.tagbar--input')).nativeElement;
-	   const searchTags = ['foo','bar','baz'];
+        fakeAsync(() => {
+          const de = fixture.debugElement;
+          const i = de.query(By.css('.tagbar--input')).nativeElement;
+          const searchTags = ['foo', 'bar', 'baz'];
 
-	   component.source = searchTags;
-	   component.minimumInput = 1;
-	   expect(component.isSearching).toBeFalse();
+          component.source = searchTags;
+          component.minimumInput = 1;
+          expect(component.isSearching).toBeFalse();
 
-	   component.onFocus('');
-	   expect(component.isSearching).toBeFalse();
+          component.onFocus('');
+          expect(component.isSearching).toBeFalse();
 
-	   component.onFocus('f');
-	   
-	   fixture.detectChanges();
-	   expect(component.isSearching).toBeTrue();
-	 }));
-      
+          component.onFocus('f');
+
+          fixture.detectChanges();
+          expect(component.isSearching).toBeTrue();
+        }));
+
       it(`when a static source is present
           when the tagbar is searching
           up and down arrows should highligh searchable values`,
-	 fakeAsync( () => {
-	   const de = fixture.debugElement;	 
-	   const i = de.query(By.css('.tagbar--input')).nativeElement;
-	   const searchTags = ['foo','bar','baz'];
-	   const focusedClass = '.tagbar--search-list-item-active'
+        fakeAsync(() => {
+          const de = fixture.debugElement;
+          const i = de.query(By.css('.tagbar--input')).nativeElement;
+          const searchTags = ['foo', 'bar', 'baz'];
+          const focusedClass = '.tagbar--search-list-item-active'
 
-	   component.source = searchTags;
+          component.source = searchTags;
 
-	   component.isSearching = true;
-	   fixture.detectChanges();
+          component.isSearching = true;
+          fixture.detectChanges();
 
-	   component.onFocus('');
-	   fixture.detectChanges();
-	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('foo');
-	   
-	   i.dispatchEvent(new KeyboardEvent('keydown', {
-	     "key": "ArrowDown"
-	   }));
-	   fixture.detectChanges();
-	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('bar');
+          component.onFocus('');
+          fixture.detectChanges();
+          expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('foo');
 
-	   i.dispatchEvent(new KeyboardEvent('keydown', {
-	     "key": "ArrowDown"
-	   }));
-	   fixture.detectChanges();
-	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('baz');
+          i.dispatchEvent(new KeyboardEvent('keydown', {
+            "key": "ArrowDown"
+          }));
+          fixture.detectChanges();
+          expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('bar');
 
-	   i.dispatchEvent(new KeyboardEvent('keydown', {
-	     "key": "ArrowUp"
-	   }));
-	   fixture.detectChanges();
-	   expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('bar');
-	 }));
+          i.dispatchEvent(new KeyboardEvent('keydown', {
+            "key": "ArrowDown"
+          }));
+          fixture.detectChanges();
+          expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('baz');
+
+          i.dispatchEvent(new KeyboardEvent('keydown', {
+            "key": "ArrowUp"
+          }));
+          fixture.detectChanges();
+          expect(de.query(By.css(focusedClass)).nativeElement.innerText).toEqual('bar');
+        }));
 
       it(`when a static source is present
           when the tagbar is searching
           when the enter key is pressed 
           should select a hilighted search option`,
-	 fakeAsync( () => {
-	   const de = fixture.debugElement;	 
-	   const i = de.query(By.css('.tagbar--input')).nativeElement;
-	   const searchTags = ['foo','bar','baz'];
+        fakeAsync(() => {
+          const de = fixture.debugElement;
+          const i = de.query(By.css('.tagbar--input')).nativeElement;
+          const searchTags = ['foo', 'bar', 'baz'];
 
-	   component.source = searchTags;
+          component.source = searchTags;
 
-	   component.onFocus('');
-	   i.dispatchEvent(new KeyboardEvent('keydown', {
-	     "key": "Enter"
-	   }));
-	   fixture.detectChanges();
+          component.onFocus('');
+          i.dispatchEvent(new KeyboardEvent('keydown', {
+            "key": "Enter"
+          }));
+          fixture.detectChanges();
 
-	   expect(component.tags).toContain('foo');
-	   expect(component.isSearching).toBeFalse();
-	   expect(component.searchIndex()).toBe(-1);
+          expect(component.tags).toContain('foo');
+          expect(component.isSearching).toBeFalse();
+          expect(component.searchIndex()).toBe(-1);
 
-	   component.onFocus('');
-	   component.onArrowDown('');
-	   i.dispatchEvent(new KeyboardEvent('keydown', {
-	     "key": "Enter"
-	   }));
-	   component.onEnterKey('');
+          component.onFocus('');
+          component.onArrowDown('');
+          i.dispatchEvent(new KeyboardEvent('keydown', {
+            "key": "Enter"
+          }));
+          component.onEnterKey('');
 
-	   expect(component.tags).toContain('bar');
-	   expect(component.isSearching).toBeFalse();
-	   expect(component.searchIndex()).toBe(-1);
-	 }));
+          expect(component.tags).toContain('bar');
+          expect(component.isSearching).toBeFalse();
+          expect(component.searchIndex()).toBe(-1);
+        }));
     });
 
     it(`when a static source is present
@@ -412,175 +418,204 @@ describe('TagbarComponent', () => {
         when the down key is pressed
         when minimum input is 0
         should show the search tags`,
-       fakeAsync(()=> {
-	 const de = fixture.debugElement;	 
-	 const i = de.query(By.css('.tagbar--input')).nativeElement;
-	 const searchTags = ['foo','bar','baz'];
+      fakeAsync(() => {
+        const de = fixture.debugElement;
+        const i = de.query(By.css('.tagbar--input')).nativeElement;
+        const searchTags = ['foo', 'bar', 'baz'];
 
-	 component.source = searchTags;
-	 expect(component.isSearching).toBeFalse();
+        component.source = searchTags;
+        expect(component.isSearching).toBeFalse();
 
-	 component.onArrowDown('');
-	 tick();
-	 fixture.detectChanges();
-	 expect(component.isSearching).toBeTrue();
-	 expect(component.searchIndex()).toBe(0);
-       }));
+        component.onArrowDown('');
+        tick();
+        fixture.detectChanges();
+        expect(component.isSearching).toBeTrue();
+        expect(component.searchIndex()).toBe(0);
+      }));
 
     it(`when a static source is present
         when the tagbar is searching
         when the escape key is preseed
         should hide the search`,
-       fakeAsync( () => {
-	 const de = fixture.debugElement;	 
-	 const i = de.query(By.css('.tagbar--input')).nativeElement;
-	 const searchTags = ['foo','bar','baz'];
+      fakeAsync(() => {
+        const de = fixture.debugElement;
+        const i = de.query(By.css('.tagbar--input')).nativeElement;
+        const searchTags = ['foo', 'bar', 'baz'];
 
-	 component.source = searchTags;
-	 component.isSearching = true;
+        component.source = searchTags;
+        component.isSearching = true;
 
-	 fixture.detectChanges();
+        fixture.detectChanges();
 
-	 component.onEscape();
-	 expect(component.isSearching).toBeFalse();
-	 expect(component.searchIndex()).toBe(-1);
-       }));
+        component.onEscape();
+        expect(component.isSearching).toBeFalse();
+        expect(component.searchIndex()).toBe(-1);
+      }));
 
     it(`when a static source is present
         when the tagbar is searching
         when the input field loses focus
         should hide the search`,
-       fakeAsync( () => {
-	 const de = fixture.debugElement;	 
-	 const i = de.query(By.css('.tagbar--input')).nativeElement;
-	 const searchTags = ['foo','bar','baz'];
+      fakeAsync(() => {
+        const de = fixture.debugElement;
+        const i = de.query(By.css('.tagbar--input')).nativeElement;
+        const searchTags = ['foo', 'bar', 'baz'];
 
-	 component.source = searchTags;
-	 component.isSearching = true;
+        component.source = searchTags;
+        component.isSearching = true;
 
-	 fixture.detectChanges();
-	 expect(component.isSearching).toBeTrue();
+        fixture.detectChanges();
+        expect(component.isSearching).toBeTrue();
 
-	 component.onBlur('');
-	 expect(component.isSearching).toBeFalse();
-	 expect(i.value).toBe('');
-       }));
+        component.onBlur('');
+        expect(component.isSearching).toBeFalse();
+        expect(i.value).toBe('');
+      }));
 
     it(`when a static source is present
         when the tagbar is searching
         when a search item is clicked on
         should add the tag`,
-       fakeAsync( () => {
-	 const de = fixture.debugElement;	 
-	 const i = de.query(By.css('.tagbar--input')).nativeElement;
-	 const searchTags = ['foo','bar','baz'];
+      fakeAsync(() => {
+        const de = fixture.debugElement;
+        const i = de.query(By.css('.tagbar--input')).nativeElement;
+        const searchTags = ['foo', 'bar', 'baz'];
 
-	 component.source = searchTags;
-	 component.onFocus('');
+        component.source = searchTags;
+        component.onFocus('');
 
-	 tick();
-	 
-	 fixture.detectChanges();
-	 expect(component.isSearching).toBeTrue();
+        tick();
 
-	 const li = de.query(By.css('.tagbar--search-list-item'));
-	 li.triggerEventHandler('mousedown','');
-	 fixture.detectChanges();
-	 
-	 expect(component.tags).toContain('foo');
-       }));
+        fixture.detectChanges();
+        expect(component.isSearching).toBeTrue();
+
+        const li = de.query(By.css('.tagbar--search-list-item'));
+        li.triggerEventHandler('mousedown', '');
+        fixture.detectChanges();
+
+        expect(component.tags).toContain('foo');
+      }));
 
     it(`when a static source is present
         when the tagbar is searching
         when a search item is already selected using the keyboard
         when the mouse hovers over another item
         should highlight only the hovered item`,
-       fakeAsync( () => {
-	 const de = fixture.debugElement;	 
-	 const i = de.query(By.css('.tagbar--input')).nativeElement;
-	 const searchTags = ['foo','bar','baz'];
+      fakeAsync(() => {
+        const de = fixture.debugElement;
+        const i = de.query(By.css('.tagbar--input')).nativeElement;
+        const searchTags = ['foo', 'bar', 'baz'];
 
-	 component.source = searchTags;
-	 component.onFocus('');
+        component.source = searchTags;
+        component.onFocus('');
 
-	 tick();
-	 
-	 fixture.detectChanges();
-	 expect(component.isSearching).toBeTrue();
+        tick();
 
-	 const li = de.query(By.css('.tagbar--search-list-item-active'));
-	 const otherLi = de.query(By.css('.tagbar--search-list-item-active+li'));
+        fixture.detectChanges();
+        expect(component.isSearching).toBeTrue();
 
-	 otherLi.triggerEventHandler('mouseover', '');
-	 fixture.detectChanges();	 
-	 
-	 expect(li.classes['tagbar--search-list-item-active']).toBeFalsy();
-	 expect(otherLi.classes['tagbar--search-list-item-active']).toBeTrue();
+        const li = de.query(By.css('.tagbar--search-list-item-active'));
+        const otherLi = de.query(By.css('.tagbar--search-list-item-active+li'));
 
-       }));
+        otherLi.triggerEventHandler('mouseover', '');
+        fixture.detectChanges();
+
+        expect(li.classes['tagbar--search-list-item-active']).toBeFalsy();
+        expect(otherLi.classes['tagbar--search-list-item-active']).toBeTrue();
+
+      }));
 
     it(`when a static source is present
         when the tagbar is searching
         when an element already exists in the tagbar
         should display as disabled`,
-       fakeAsync( () => {
-	 const de = fixture.debugElement;	 
-	 const i = de.query(By.css('.tagbar--input')).nativeElement;
-	 const searchTags = ['foo','bar','baz'];
+      fakeAsync(() => {
+        const de = fixture.debugElement;
+        const i = de.query(By.css('.tagbar--input')).nativeElement;
+        const searchTags = ['foo', 'bar', 'baz'];
 
-	 component.source = searchTags;
-	 component.onFocus('');
-	 tick();
-	 fixture.detectChanges();
+        component.source = searchTags;
+        component.onFocus('');
+        tick();
+        fixture.detectChanges();
 
-	 const li = de.query(By.css('.tagbar--search-list-item-active'));
-	 expect(li).toBeTruthy();
-	 
-	 component.addSearchItem('foo');
-	 component.onFocus('');
-	 tick();
-	 fixture.detectChanges();
+        const li = de.query(By.css('.tagbar--search-list-item-active'));
+        expect(li).toBeTruthy();
 
-	 const sameLi = de.query(By.css('.tagbar--search-list-item-active'));
-	 expect(sameLi.classes['tagbar--search-list-item-disabled']).toBeTruthy();
-       }));
+        component.addSearchItem('foo');
+        component.onFocus('');
+        tick();
+        fixture.detectChanges();
+
+        const sameLi = de.query(By.css('.tagbar--search-list-item-active'));
+        expect(sameLi.classes['tagbar--search-list-item-disabled']).toBeTruthy();
+      }));
 
     it(`when a static source is present
         when the tagbar is searching
         when the letter 'b' is pressed
         should highlight the first search eleemnt with the letter b in it`,
-       fakeAsync(() => {
-	 const de = fixture.debugElement;	 
-	 const i = de.query(By.css('.tagbar--input')).nativeElement;
-	 const searchTags = ['foo','bar','baz'];
+      fakeAsync(() => {
+        const de = fixture.debugElement;
+        const i = de.query(By.css('.tagbar--input')).nativeElement;
+        const searchTags = ['foo', 'bar', 'baz'];
 
-	 component.source = searchTags;
-	 
-	 component.onFocus('');
-	 i.dispatchEvent(new KeyboardEvent('keydown', {
-	   "key": "b"
-	 }));
-	 fixture.detectChanges();
+        component.source = searchTags;
 
-	 const it = de.query(By.css('.tagbar--search-list-item-active'));
-	 expect(it.nativeElement.innerText).toEqual('bar');
-       }));
+        component.onFocus('');
+        i.dispatchEvent(new KeyboardEvent('keydown', {
+          "key": "b"
+        }));
+        fixture.detectChanges();
+
+        const it = de.query(By.css('.tagbar--search-list-item-active'));
+        expect(it.nativeElement.innerText).toEqual('bar');
+      }));
 
     it(`when a function source is present
         when the tagbar is searching
         when minimum input is 0
         when the tag bar gets focus
         should display tags returned from source function`,
-       fakeAsync(() => {
+      fakeAsync(() => {
 
-	 const de = fixture.debugElement;
-	 const i = de.query(By.css('.tagbar--input')).nativeElement;
+        const de = fixture.debugElement;
+        const i = de.query(By.css('.tagbar--input')).nativeElement;
 
-	 component.source = (needle) => { return ['bob', 'bib', 'bub']; }
-	 component.onFocus('');
-	 fixture.detectChanges();
+        component.source = (needle) => { return ['bob', 'bib', 'bub']; }
+        component.onFocus('');
+        fixture.detectChanges();
 
-	 expect(component.isSearching).toBeTrue();
-       }));
+        expect(component.isSearching).toBeTrue();
+      }));
+
+    it(`when a function source is present
+        when the function returns a promise
+        when the minimum input is 0
+        when the tag bar gets focus
+        should display tags after the promise is completed.`,
+      async () => {
+        const de = fixture.debugElement;
+        const i = de.query(By.css('.tagbar--input')).nativeElement;
+
+        component.asyncSource = (needle) => {
+          return ["bob", "bod", "beb"];
+        }
+
+        let res = await component.fetchAsyncSearchTags('');
+        component.onFocus('');
+        fixture.detectChanges();
+
+        expect(res.length).toEqual(3);
+        expect(res).toContain('bob');
+        expect(res).toContain('bod');
+        expect(res).toContain('beb');
+
+        expect(component.isSearching).toBeTrue();
+        expect(component.tags).toContain('bob');
+        expect(component.tags).toContain('bod');
+        expect(component.tags).toContain('beb');
+
+      });
   });
 });

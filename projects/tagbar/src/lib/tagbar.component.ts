@@ -2,21 +2,25 @@ import { Component, OnInit, Input, HostBinding } from '@angular/core';
 
 const defaultTagColor = '#666666'
 
+type asyncSourceFnType = (needle: string) => string[];
+type sourceFnType = (needle: string) => string[];
+
 @Component({
   selector: 'ngx-tagbar',
   templateUrl: 'tagbar.component.html',
-  styleUrls: ['./tagbar.component.scss' ]
+  styleUrls: ['./tagbar.component.scss']
 })
 export class TagbarComponent implements OnInit {
   private _tags: string[] = [];
   private _tagColor: string = defaultTagColor;
   private _limited: boolean = false;
-  private _source: string[] | ((needle: string) => string[]) = [];
+  private _source: string[] | sourceFnType = undefined;
+  private _asyncSource: asyncSourceFnType = undefined;
   private _maxTags: number = -1;
   private _minimumInput: number = 0;
   private _searchTags: string[] = null;
   private _searchIndex: number = -1;
-  
+
   isSearching: boolean = false;
   inputTag = '';
 
@@ -34,8 +38,12 @@ export class TagbarComponent implements OnInit {
   set limited(limited) { this._limited = limited; }
 
   @Input('source')
-  get source(): string[] | ((needle: string) => string[]) { return this._source; }
+  get source(): string[] | sourceFnType { return this._source; }
   set source(source) { this._source = source; }
+
+  @Input('asyncSource')
+  get asyncSource(): asyncSourceFnType { return this._asyncSource; }
+  set asyncSource(source: asyncSourceFnType) { this._asyncSource = source; }
 
   @Input('maxTags')
   get maxTags(): number { return this._maxTags; }
@@ -43,11 +51,11 @@ export class TagbarComponent implements OnInit {
 
   @Input('minimumInput')
   get minimumInput(): number { return this._minimumInput; }
-  set minimumInput(minimumInput: number) { this._minimumInput = minimumInput ;}
+  set minimumInput(minimumInput: number) { this._minimumInput = minimumInput; }
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   /// *** Public Methods *** ///
   addTag(newTag: string) {
@@ -55,20 +63,20 @@ export class TagbarComponent implements OnInit {
     newTag = newTag.trim();
 
     // Stop searching if we are actively doing so
-    if(this.isSearching)
+    if (this.isSearching)
       this.closeSearch();
-    
+
     // Don't add a blank tag
-    if(newTag === '')
+    if (newTag === '')
       return;
 
     // Don't add more tags than maxTags
-    if(this.maxTags !== -1 && this.maxTags === this.tags.length) 
+    if (this.maxTags !== -1 && this.maxTags === this.tags.length)
       return;
 
     // Don't add a tag that already exists
     const idx = this.findTag(newTag);
-    if(idx > -1) {
+    if (idx > -1) {
       return;
     }
 
@@ -81,21 +89,13 @@ export class TagbarComponent implements OnInit {
 
   removeTag(tag: string) {
     const idx = this.findTag(tag);
-    if(idx > -1) {
-      this._tags.splice(idx,1);
+    if (idx > -1) {
+      this._tags.splice(idx, 1);
     }
   }
 
   findTag(tag: string) {
     return this._tags.indexOf(tag, 0);
-  }
-
-  getMatchingSourceTags(needle: string) : string[] {
-    if(typeof(this._source) === 'function') {
-      return this._source(needle);
-    } else {
-      return this._source.filter((tag) => tag.indexOf(needle) !== -1);
-    }
   }
 
   searchIndex(): number {
@@ -115,90 +115,90 @@ export class TagbarComponent implements OnInit {
   ///***  event functions  ***///
   onBlur(newTag: string) {
     let tag = newTag;
-    
-    if(tag !== "")
+
+    if (tag !== "")
       this.addTag(tag);
 
-    if(this.isSearching)
+    if (this.isSearching)
       this.closeSearch();
   }
 
   deleteNewestTag(needle: string): void {
-    this._tags.splice(this._tags.length-1, 1)
+    this._tags.splice(this._tags.length - 1, 1)
   }
 
-  onKeyDown(event: KeyboardEvent, needle: string): void {    
-    
-    switch(event.key) {
-      case "Enter":
-	this.onEnterKey(needle);
-	break;
-      case "Backspace":
-	let inputEL = event.target as HTMLInputElement;
-	if(inputEL.selectionStart === 0)
-	  this.deleteNewestTag(needle);
-	break;
-      case "ArrowDown":
-	this.onArrowDown(needle);
-	break;
-      case "ArrowUp":
-	this.onArrowUp(needle);
-	break;
-      case "Escape":
-	this.onEscape();
-	break;
-      default:
-	let newNeedle = needle + event.key;
-	
-	this.searchSource(newNeedle);	
-	break;
-    }        
-  }
+  onKeyDown(event: KeyboardEvent, needle: string): void {
 
-  onKeyUp(event: KeyboardEvent, needle: string) : void {
-    switch(event.key) {
+    switch (event.key) {
       case "Enter":
+        this.onEnterKey(needle);
+        break;
       case "Backspace":
+        let inputEL = event.target as HTMLInputElement;
+        if (inputEL.selectionStart === 0)
+          this.deleteNewestTag(needle);
+        break;
       case "ArrowDown":
+        this.onArrowDown(needle);
+        break;
       case "ArrowUp":
+        this.onArrowUp(needle);
+        break;
       case "Escape":
+        this.onEscape();
+        break;
       default:
-	break;
+        let newNeedle = needle + event.key;
+
+        this.searchSource(newNeedle);
+        break;
     }
   }
 
-  onEnterKey(needle: string) : void {
-    if(this.isSearching) {
+  onKeyUp(event: KeyboardEvent, needle: string): void {
+    switch (event.key) {
+      case "Enter":
+      case "Backspace":
+      case "ArrowDown":
+      case "ArrowUp":
+      case "Escape":
+      default:
+        break;
+    }
+  }
+
+  onEnterKey(needle: string): void {
+    if (this.isSearching) {
       this.addTag(this._searchTags[this._searchIndex]);
     } else {
       this.addTag(needle);
     }
   }
-  
-  onFocus(needle: string) : void {
-    if(this.shouldSearch(needle)) {
+
+  onFocus(needle: string): void {
+    if (this.shouldSearch(needle)) {
       this._searchIndex = 0;
       this.displaySearchTags(needle);
     }
   }
 
-  onArrowDown(needle: string) : void {
-    if(this.shouldSearch(needle)) {
+  onArrowDown(needle: string): void {
+    if (this.shouldSearch(needle)) {
       this.displaySearchTags(needle);
     }
-    
-    if(this._searchIndex < (this._searchTags.length - 1)) {
+
+    if (this._searchIndex < (this._searchTags.length - 1)) {
       this._searchIndex += 1;
     }
   }
 
-  onArrowUp(needle: string) : void {
-    if(this._searchIndex > 0) {
+  onArrowUp(needle: string): void {
+    if (this._searchIndex > 0) {
       this._searchIndex -= 1;
     }
   }
 
-  onHoverSearchItem(idx: number) : void {
+  onHoverSearchItem(idx: number): void {
     this._searchIndex = idx;
   }
 
@@ -206,40 +206,60 @@ export class TagbarComponent implements OnInit {
     this.closeSearch();
   }
 
-  findFirstSearchItem(needle: string) : number {
-    return this._searchTags.findIndex( (n) => n.indexOf(needle) !== -1);
+  findFirstSearchItem(needle: string): number {
+    return this._searchTags.findIndex((n) => n.indexOf(needle) !== -1);
   }
 
-  shouldSearch(needle: string) : boolean {
-    return (typeof this.source === 'function' || this.source.length !== 0)
-      && needle.length >= this.minimumInput;
+  shouldSearch(needle: string): boolean {
+    return this.hasSource() && needle.length >= this.minimumInput;
   }
 
   displaySearchTags(needle) {
-    this.isSearching = true;
 
-    if(typeof this.source === 'function') {
-      this._searchTags = this.source(needle);
+    if (this.asyncSource !== undefined) {
+      this._searchTags = [];
+      this.isSearching = true;
+
     } else {
-      this._searchTags = this.source;
-    }    
+
+      if (typeof this.source === 'function') {
+        this._searchTags = this.source(needle);
+      } else {
+        this._searchTags = this.source;
+      }
+
+      this.isSearching = true;
+    }
+
   }
 
-  searchSource(needle: string) : void {
+  async fetchAsyncSearchTags(needle): Promise<string[]> {
+    let results = await new Promise<string[]>((resolve, reject) => {
+      resolve(this._asyncSource(needle));
+    });
 
-    if(this.shouldSearch(needle)) {
+    return results;
+  }
 
-      if(typeof this.source === 'function') {
-	this.displaySearchTags(needle);
+  searchSource(needle: string): void {
+
+    if (this.shouldSearch(needle)) {
+
+      if (typeof this.source === 'function') {
+        this.displaySearchTags(needle);
       } else {
-	this.displaySearchTags(needle);
+        this.displaySearchTags(needle);
       }
-      
+
       this._searchIndex = this.findFirstSearchItem(needle);
     }
   }
 
-  addSearchItem(searchItem: string) : void {
+  hasSource(): boolean {
+    return this.source !== undefined || this.asyncSource !== undefined;
+  }
+
+  addSearchItem(searchItem: string): void {
     this.addTag(searchItem);
   }
 }
