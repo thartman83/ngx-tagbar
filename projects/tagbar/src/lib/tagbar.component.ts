@@ -139,6 +139,8 @@ export class TagbarComponent implements OnInit {
         let inputEL = event.target as HTMLInputElement;
         if (inputEL.selectionStart === 0)
           this.deleteNewestTag(needle);
+        else
+          this.displaySearchTags(needle);
         break;
       case "ArrowDown":
         this.onArrowDown(needle);
