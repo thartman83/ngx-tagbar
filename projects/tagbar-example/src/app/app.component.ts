@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
+import { DogBreedsService } from './dog-breeds.service';
 
 @Component({
   selector: 'app-root',
@@ -14,11 +15,19 @@ export class AppComponent {
   codeBlock4 = `<ngx-tagbar [tags]="['foo','bar']" [maxTags]="3"></ngx-tagbar>`;
   codeBlock5 = `<ngx-tagbar [source]="['foo','bar','baz']"></ngx-tagbar>`;
   codeBlock6 = `<ngx-tagbar [source]="sourceFn"></ngx-tagbar>
-sourceFn(needle: string): string[] { return ['bob','bib','bub']; }`;
+    sourceFn(needle: string): string[] { return ['bob','bib','bub']; }`;
   codeBlock7 = `<ngx-tagbar [source]="sourceObserver"></ngx-tagbar>
-sourceObserver = new Observable( (observer) => {
+    sourceObserver = new Observable( (observer) => {
     setTimeout(() => observer.next(['bob','bod','beb']), 5000);
-  });`;
+    });`;
+  codeBlock8 = `<ngx-tagbar [source]="sourceObserver"></ngx-tagbar>
+    sourceObserver = new Observable( (observer) => {
+    setTimeout(() => observer.next(['bob','bod','beb']), 5000);
+    });`;
+
+  constructor(public dogBreeds: DogBreedsService) {
+
+  }
 
   sourceFn(needle: string): string[] {
     return ['bob','bib','bub'];

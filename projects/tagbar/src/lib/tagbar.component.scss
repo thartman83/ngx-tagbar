@@ -91,11 +91,17 @@ $tag-color: var(--tag-color);
             }
         }
 
+        &-results {
+
+        }
+
         &-list {
             list-style: none;
 	          margin-top: auto;
             margin-bottom: 0;
             padding-left: 0;
+            overflow: auto;
+            max-height: 10rem;
 
             &-item {
 		            &-active {

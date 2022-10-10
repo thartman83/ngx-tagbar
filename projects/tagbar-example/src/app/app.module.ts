@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { TagbarModule } from 'tagbar'
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -10,7 +11,8 @@ import { TagbarModule } from 'tagbar'
   ],
   imports: [
     BrowserModule,
-    TagbarModule
+    TagbarModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

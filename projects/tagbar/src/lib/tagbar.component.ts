@@ -191,6 +191,7 @@ export class TagbarComponent implements OnInit {
 
     if (this._searchIndex < (this._searchTags.length - 1)) {
       this._searchIndex += 1;
+
     }
   }
 
@@ -221,9 +222,9 @@ export class TagbarComponent implements OnInit {
       this._searchTags = this.source(needle);
     } else if(isObservable(this.source)) {
       this.dataPending = true;
-
       this.source.subscribe(data => {
-        this._searchTags = data
+        let retval = data.filter((val) => val.indexOf(needle) !== -1);
+        this._searchTags = retval;
         this.dataPending = false;
       });
     } else {
