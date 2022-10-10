@@ -281,8 +281,8 @@ describe('TagbarComponent', () => {
 
       it(`when a static source is present
           when minimumInput is 0
-	  should display the list from the source when input is focused`,
-        fakeAsync(() => {
+	        should display the list from the source when input is focused`,
+         fakeAsync(() => {
 
           const de = fixture.debugElement;
           const i = de.query(By.css('.tagbar--input')).nativeElement;
@@ -305,8 +305,54 @@ describe('TagbarComponent', () => {
           expect(component.isSearching).toBeTrue();
 
           expect(de.query(By.css('.tagbar--search')).nativeElement).toBeTruthy();
-          expect(de.query(By.css('.tagbar--search-list')).children.length).toEqual(searchTags.length);
-        }));
+          expect(de.queryAll(By.css('.tagbar--search-list-item')).length).toEqual(searchTags.length);
+         }));
+
+      it(`when a static source is present
+          when limited is not set
+          should add a tag not present in source list`,
+         () => {
+           const de = fixture.debugElement;
+           const i = de.query(By.css('.tagbar--input')).nativeElement;
+           const searchTags = ['foo', 'bar', 'baz'];
+
+           component.source = searchTags;
+           component.minimumInput = 0;
+           component.limited = false;
+
+           component.onFocus('');
+           expect(component.tags.length).toEqual(0);
+           expect(component.isSearching).toBeTrue();
+
+           // blur change
+           component.onBlur('googoo');
+           fixture.detectChanges();
+
+           expect(component.tags.length).toEqual(1);
+           expect(component.tags).toContain('googoo');
+
+           // enter key changes
+           component.onFocus('');
+           expect(component.isSearching).toBeTrue();
+
+           // Add some characters
+           i.dispatchEvent(new KeyboardEvent('keyup', {
+            "key": "g"
+           }));
+
+           i.dispatchEvent(new KeyboardEvent('keyup', {
+             "key": "o"
+           }));
+
+           i.dispatchEvent(new KeyboardEvent('keydown', {
+            "key": "Enter"
+           }));
+
+           fixture.detectChanges();
+
+           expect(component.tags.length).toEqual(2);
+           expect(component.tags).not.toContain('go');
+         });
 
       it(`when a static source is present
           when minimumInput is 1
@@ -384,34 +430,45 @@ describe('TagbarComponent', () => {
           when the tagbar is searching
           when the enter key is pressed 
           should select a hilighted search option`,
-        fakeAsync(() => {
-          const de = fixture.debugElement;
-          const i = de.query(By.css('.tagbar--input')).nativeElement;
-          const searchTags = ['foo', 'bar', 'baz'];
+         fakeAsync(() => {
+           const de = fixture.debugElement;
+           const i = de.query(By.css('.tagbar--input')).nativeElement;
+           const searchTags = ['foo', 'bar', 'baz'];
 
-          component.source = searchTags;
+           component.source = searchTags;
 
-          component.onFocus('');
-          i.dispatchEvent(new KeyboardEvent('keydown', {
-            "key": "Enter"
-          }));
-          fixture.detectChanges();
+           component.onFocus('');
+           fixture.detectChanges();
+           i.dispatchEvent(new KeyboardEvent('keydown', {
+             "key": "Enter"
+           }));
+           fixture.detectChanges();
 
-          expect(component.tags).toContain('foo');
-          expect(component.isSearching).toBeFalse();
-          expect(component.searchIndex()).toBe(-1);
+           expect(component.tags).toContain('foo');
+           expect(component.isSearching).toBeFalse();
+           expect(component.searchIndex()).toBe(-1);
 
-          component.onFocus('');
-          component.onArrowDown('');
-          i.dispatchEvent(new KeyboardEvent('keydown', {
-            "key": "Enter"
-          }));
-          component.onEnterKey('');
+           component.onFocus('');
+           fixture.detectChanges();
+           i.dispatchEvent(new KeyboardEvent('keydown', {
+             "key": "ArrowDown"
+           }));
+           fixture.detectChanges();
 
-          expect(component.tags).toContain('bar');
-          expect(component.isSearching).toBeFalse();
-          expect(component.searchIndex()).toBe(-1);
-        }));
+           const li = de.query(By.css('.tagbar--search-list-item-active'));
+           expect(li).toBeTruthy();
+           expect(li.nativeElement.innerText).toEqual('bar');
+
+           i.dispatchEvent(new KeyboardEvent('keydown', {
+             "key": "Enter"
+           }));
+           fixture.detectChanges();
+
+           expect(component.tags).toContain('bar');
+           expect(component.isSearching).toBeFalse();
+           expect(component.searchIndex()).toBe(-1);
+
+         }));
     });
 
     it(`when a static source is present
@@ -555,23 +612,24 @@ describe('TagbarComponent', () => {
     it(`when a static source is present
         when the tagbar is searching
         when the letter 'b' is pressed
-        should highlight the first search eleemnt with the letter b in it`,
-      fakeAsync(() => {
-        const de = fixture.debugElement;
-        const i = de.query(By.css('.tagbar--input')).nativeElement;
-        const searchTags = ['foo', 'bar', 'baz'];
+        should highlight the first search element with the letter b in it`,
+       fakeAsync(() => {
+         const de = fixture.debugElement;
+         const i = de.query(By.css('.tagbar--input')).nativeElement;
+         const searchTags = ['foo', 'bar', 'baz'];
 
-        component.source = searchTags;
+         component.source = searchTags;
 
-        component.onFocus('');
-        i.dispatchEvent(new KeyboardEvent('keydown', {
-          "key": "b"
-        }));
-        fixture.detectChanges();
+         component.onFocus('');
+         component.onKeyUp(new KeyboardEvent('keyup', {
+           "key": "b"
+         }), 'b');
 
-        const it = de.query(By.css('.tagbar--search-list-item-active'));
-        expect(it.nativeElement.innerText).toEqual('bar');
-      }));
+         fixture.detectChanges();
+
+         const it = de.query(By.css('.tagbar--search-list-item-active'));
+         expect(it.nativeElement.innerText).toEqual('bar');
+       }));
 
     it(`when a function source is present
         when the tagbar is searching
@@ -590,11 +648,11 @@ describe('TagbarComponent', () => {
         expect(component.isSearching).toBeTrue();
       }));
 
-    it(`when an observable source is present
+/*    it(`when an observable source is present
         when the minimum input is 0
         when the tag bar gets focus
         should display tags after the observable complets`,
-       async () => {
+       fakeAsync(() => {
          const de = fixture.debugElement;
          const i = de.query(By.css('.tagbar--input')).nativeElement;
          const data = ['bob', 'beb', 'bod'];
@@ -605,14 +663,13 @@ describe('TagbarComponent', () => {
          fixture.detectChanges();
          expect(component.dataPending).toBeTrue();
 
-         fixture.whenStable().then( () => {
-           fixture.detectChanges();
-           expect(component.isSearching).toBeTrue();
-           expect(component.tags.length).toEqual(3);
-           expect(component.tags).toContain('bob');
-           expect(component.tags).toContain('beb');
-           expect(component.tags).toContain('bod');
-         });
-       });
+         fixture.detectChanges();
+         expect(component.isSearching).toBeTrue();
+         expect(component.tags.length).toEqual(3);
+         expect(component.tags).toContain('bob');
+         expect(component.tags).toContain('beb');
+         expect(component.tags).toContain('bod');
+
+       }));*/
   });
 });

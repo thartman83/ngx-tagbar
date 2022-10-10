@@ -19,8 +19,9 @@ export class TagbarComponent implements OnInit {
   private _asyncSource: asyncSourceFnType = undefined;
   private _maxTags: number = -1;
   private _minimumInput: number = 0;
-  private _searchTags: string[] = null;
+  private _searchTags: string[] = undefined;
   private _searchIndex: number = -1;
+  private _oldNeedle: string = '';
 
   isSearching: boolean = false;
   inputTag = '';
@@ -152,9 +153,6 @@ export class TagbarComponent implements OnInit {
         this.onEscape();
         break;
       default:
-        let newNeedle = needle + event.key;
-
-        this.searchSource(newNeedle);
         break;
     }
   }
@@ -166,14 +164,24 @@ export class TagbarComponent implements OnInit {
       case "ArrowDown":
       case "ArrowUp":
       case "Escape":
+        break;
       default:
+        if(this._oldNeedle !== needle) {
+          this._oldNeedle = needle;
+          this.searchSource(needle);
+        }
         break;
     }
   }
 
   onEnterKey(needle: string): void {
     if (this.isSearching) {
-      this.addTag(this._searchTags[this._searchIndex]);
+      if(this._searchIndex >= 0) {
+        this.addTag(this._searchTags[this._searchIndex]);
+      } else if (!this.limited) {
+        this.addTag(needle);
+      }
+
     } else {
       this.addTag(needle);
     }
@@ -193,7 +201,6 @@ export class TagbarComponent implements OnInit {
 
     if (this._searchIndex < (this._searchTags.length - 1)) {
       this._searchIndex += 1;
-
     }
   }
 
@@ -219,7 +226,7 @@ export class TagbarComponent implements OnInit {
     return this.hasSource() && needle.length >= this.minimumInput;
   }
 
-  displaySearchTags(needle) {
+  displaySearchTags(needle: string) {
     if (typeof this.source === 'function') {
       this._searchTags = this.source(needle);
     } else if(isObservable(this.source)) {
@@ -239,13 +246,7 @@ export class TagbarComponent implements OnInit {
   searchSource(needle: string): void {
 
     if (this.shouldSearch(needle)) {
-
-      if (typeof this.source === 'function') {
-        this.displaySearchTags(needle);
-      } else {
-        this.displaySearchTags(needle);
-      }
-
+      this.displaySearchTags(needle);
       this._searchIndex = this.findFirstSearchItem(needle);
     }
   }

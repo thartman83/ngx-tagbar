@@ -115,6 +115,10 @@ $tag-color: var(--tag-color);
                 list-style: none;
                 padding: .25rem;
             }
+
+            &-empty::after {
+                content: 'No Search Results'
+            }
         }
 
         &-loader {

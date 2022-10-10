@@ -14,6 +14,7 @@
       <input #newtag class="tagbar--input" name="tagSearch" type="text"
 	           [(ngModel)]="inputTag"
 	           (keydown)="onKeyDown($event, newtag.value)"
+             (keyup)="onKeyUp($event, newtag.value)"
              (blur)="onBlur(newtag.value)"
 	           (focus)="onFocus(newtag.value)"
              autocorrect="off" autocomplete="off" />
@@ -23,11 +24,14 @@
     <div [ngClass]="{'tagbar--search': true, 'tagbar--search-pending': dataPending}">
       <div class="tagbar--search-loader"></div>
       <div class="tagbar--search-results">
-        <ul class="tagbar--search-list">
+        <ul class="tagbar--search-list" role="listbox">
+          <li [class.tagbar--search-list-empty]="_searchTags === undefined || _searchTags.length === 0">
+          </li>
           <li class="tagbar--search-list-item"
 	            *ngFor="let searchTag of _searchTags; let i = index"
 	            [class.tagbar--search-list-item-disabled]="findTag(searchTag) !== -1"
 	            [class.tagbar--search-list-item-active]="_searchIndex === i"
+              role="option"
 	            (mouseover)="onHoverSearchItem(i)"
 	            (mousedown)="addSearchItem(searchTag)">{{searchTag}}</li>
         </ul>
