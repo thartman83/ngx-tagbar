@@ -20,15 +20,18 @@
     </span>
   </span>
   <ng-container *ngIf="isSearching">
-    <div class="tagbar--search">
-      <ul class="tagbar--search-list">
-        <li class="tagbar--search-list-item"
-	          *ngFor="let searchTag of _searchTags; let i = index"
-	          [class.tagbar--search-list-item-disabled]="findTag(searchTag) !== -1"
-	          [class.tagbar--search-list-item-active]="_searchIndex === i"
-	          (mouseover)="onHoverSearchItem(i)"
-	          (mousedown)="addSearchItem(searchTag)">{{searchTag}}</li>
-      </ul>
+    <div [ngClass]="{'tagbar--search': true, 'tagbar--search-pending': dataPending}">
+      <div class="tagbar--search-loader"></div>
+      <div class="tagbar--search-results">
+        <ul class="tagbar--search-list">
+          <li class="tagbar--search-list-item"
+	            *ngFor="let searchTag of _searchTags; let i = index"
+	            [class.tagbar--search-list-item-disabled]="findTag(searchTag) !== -1"
+	            [class.tagbar--search-list-item-active]="_searchIndex === i"
+	            (mouseover)="onHoverSearchItem(i)"
+	            (mousedown)="addSearchItem(searchTag)">{{searchTag}}</li>
+        </ul>
+      </div>
     </div>
   </ng-container>
 </div>

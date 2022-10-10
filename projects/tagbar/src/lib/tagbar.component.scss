@@ -81,6 +81,16 @@ $tag-color: var(--tag-color);
         width: 100%;
         z-index: 1;
 
+        &-pending {
+            & > .tagbar--search-loader {
+                display: block;
+            }
+
+            & > .tagbar--search-results {
+                display: none;
+            }
+        }
+
         &-list {
             list-style: none;
 	          margin-top: auto;
@@ -99,6 +109,21 @@ $tag-color: var(--tag-color);
                 list-style: none;
                 padding: .25rem;
             }
+        }
+
+        &-loader {
+            display: none;
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
+import { Observable, isObservable } from 'rxjs';
 
 const defaultTagColor = '#666666'
 
@@ -14,7 +15,7 @@ export class TagbarComponent implements OnInit {
   private _tags: string[] = [];
   private _tagColor: string = defaultTagColor;
   private _limited: boolean = false;
-  private _source: string[] | sourceFnType = undefined;
+  private _source: string[] | sourceFnType | Observable<string[]> = undefined;
   private _asyncSource: asyncSourceFnType = undefined;
   private _maxTags: number = -1;
   private _minimumInput: number = 0;
@@ -23,6 +24,7 @@ export class TagbarComponent implements OnInit {
 
   isSearching: boolean = false;
   inputTag = '';
+  dataPending: boolean = false;
 
   @HostBinding("style.--tag-color")
   @Input('tag-color')
@@ -38,7 +40,7 @@ export class TagbarComponent implements OnInit {
   set limited(limited) { this._limited = limited; }
 
   @Input('source')
-  get source(): string[] | sourceFnType { return this._source; }
+  get source(): string[] | sourceFnType | Observable<string[]> { return this._source; }
   set source(source) { this._source = source; }
 
   @Input('asyncSource')
@@ -183,7 +185,7 @@ export class TagbarComponent implements OnInit {
   }
 
   onArrowDown(needle: string): void {
-    if (this.shouldSearch(needle)) {
+    if (this.shouldSearch(needle) && !this.isSearching) {
       this.displaySearchTags(needle);
     }
 
@@ -215,30 +217,20 @@ export class TagbarComponent implements OnInit {
   }
 
   displaySearchTags(needle) {
+    if (typeof this.source === 'function') {
+      this._searchTags = this.source(needle);
+    } else if(isObservable(this.source)) {
+      this.dataPending = true;
 
-    if (this.asyncSource !== undefined) {
-      this._searchTags = [];
-      this.isSearching = true;
-
+      this.source.subscribe(data => {
+        this._searchTags = data
+        this.dataPending = false;
+      });
     } else {
-
-      if (typeof this.source === 'function') {
-        this._searchTags = this.source(needle);
-      } else {
-        this._searchTags = this.source;
-      }
-
-      this.isSearching = true;
+      this._searchTags = this.source;
     }
 
-  }
-
-  async fetchAsyncSearchTags(needle): Promise<string[]> {
-    let results = await new Promise<string[]>((resolve, reject) => {
-      resolve(this._asyncSource(needle));
-    });
-
-    return results;
+    this.isSearching = true;
   }
 
   searchSource(needle: string): void {

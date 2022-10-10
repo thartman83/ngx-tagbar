@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -14,9 +15,17 @@ export class AppComponent {
   codeBlock5 = `<ngx-tagbar [source]="['foo','bar','baz']"></ngx-tagbar>`;
   codeBlock6 = `<ngx-tagbar [source]="sourceFn"></ngx-tagbar>
 sourceFn(needle: string): string[] { return ['bob','bib','bub']; }`;
+  codeBlock7 = `<ngx-tagbar [source]="sourceObserver"></ngx-tagbar>
+sourceObserver = new Observable( (observer) => {
+    setTimeout(() => observer.next(['bob','bod','beb']), 5000);
+  });`;
 
   sourceFn(needle: string): string[] {
     return ['bob','bib','bub'];
   }
+
+  sourceObserver = new Observable( (observer) => {
+    setTimeout(() => observer.next(['bob','bod','beb']), 5000);
+  });
 
 }

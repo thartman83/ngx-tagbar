@@ -2,6 +2,7 @@ import { Testability } from '@angular/core';
 import { ComponentFixture, TestBed, tick, fakeAsync, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { Observable, of } from 'rxjs';
 import { TagbarComponent } from './tagbar.component';
 
 function sleep(ms) {
@@ -589,33 +590,29 @@ describe('TagbarComponent', () => {
         expect(component.isSearching).toBeTrue();
       }));
 
-    it(`when a function source is present
-        when the function returns a promise
+    it(`when an observable source is present
         when the minimum input is 0
         when the tag bar gets focus
-        should display tags after the promise is completed.`,
-      async () => {
-        const de = fixture.debugElement;
-        const i = de.query(By.css('.tagbar--input')).nativeElement;
+        should display tags after the observable complets`,
+       async () => {
+         const de = fixture.debugElement;
+         const i = de.query(By.css('.tagbar--input')).nativeElement;
+         const data = ['bob', 'beb', 'bod'];
 
-        component.asyncSource = (needle) => {
-          return ["bob", "bod", "beb"];
-        }
+         component.source = of(data);
 
-        let res = await component.fetchAsyncSearchTags('');
-        component.onFocus('');
-        fixture.detectChanges();
+         component.onFocus('');
+         fixture.detectChanges();
+         expect(component.dataPending).toBeTrue();
 
-        expect(res.length).toEqual(3);
-        expect(res).toContain('bob');
-        expect(res).toContain('bod');
-        expect(res).toContain('beb');
-
-        expect(component.isSearching).toBeTrue();
-        expect(component.tags).toContain('bob');
-        expect(component.tags).toContain('bod');
-        expect(component.tags).toContain('beb');
-
-      });
+         fixture.whenStable().then( () => {
+           fixture.detectChanges();
+           expect(component.isSearching).toBeTrue();
+           expect(component.tags.length).toEqual(3);
+           expect(component.tags).toContain('bob');
+           expect(component.tags).toContain('beb');
+           expect(component.tags).toContain('bod');
+         });
+       });
   });
 });
