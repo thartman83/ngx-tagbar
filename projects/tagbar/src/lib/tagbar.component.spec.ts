@@ -647,6 +647,34 @@ describe('TagbarComponent', () => {
 
         expect(component.isSearching).toBeTrue();
       }));
+    it(`when a function source is present
+        when the source has more items that the search box can view
+        when the arrow keys are used to search past the visible box
+        selected item should scroll into view`,
+       fakeAsync(() => {
+         const de = fixture.debugElement;
+         const i = de.query(By.css('.tagbar--input')).nativeElement;
+
+         component.source = (needle) => { return ['bob','bib','bub', 'bird',
+                                                  'bribe', 'bride', 'birdie',
+                                                  'boabab']; }
+         component.onFocus('');
+         fixture.detectChanges();
+         expect(component.isSearching).toBeTrue();
+
+         for(let x = 0; x < 9; ++x) {
+           i.dispatchEvent(new KeyboardEvent('keydown', {
+             "key": "ArrowDown"
+           }));
+         }
+
+         fixture.detectChanges();
+         const li = de.query(By.css('.tagbar--search-list-item-active')).nativeElement;
+         expect(li.innerText).toEqual('boabab');
+         li.focus();
+         li.scrollTo();
+         console.log(li);
+       }));
 
 /*    it(`when an observable source is present
         when the minimum input is 0

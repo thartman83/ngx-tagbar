@@ -31,7 +31,10 @@
 	            *ngFor="let searchTag of _searchTags; let i = index"
 	            [class.tagbar--search-list-item-disabled]="findTag(searchTag) !== -1"
 	            [class.tagbar--search-list-item-active]="_searchIndex === i"
+              [attr.aria-selected]="_searchIndex === i"
+              [attr.focus]="_searchIndex === i"
               role="option"
+              tabIndex="{{i}}"
 	            (mouseover)="onHoverSearchItem(i)"
 	            (mousedown)="addSearchItem(searchTag)">{{searchTag}}</li>
         </ul>

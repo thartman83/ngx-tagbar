@@ -30,7 +30,7 @@ export class AppComponent {
   }
 
   sourceFn(needle: string): string[] {
-    return ['bob','bib','bub'];
+    return ['bob','bib','bub', 'bird', 'bribe', 'bride', 'birdie', 'boabab'];
   }
 
   sourceObserver = new Observable( (observer) => {
