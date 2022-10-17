@@ -1,0 +1,8 @@
+<li class="tagbar--search-list-item"
+    [attr.aria-current]="hilighted ? 'true' : 'false'"
+    [attr.aria-selected]="selected ? 'true' : 'false'"
+    [disabled]="selected ? true : null"
+    role="option"
+	  (mouseenter)="onMouseEnter()"
+    (mouseleave)="onMouseLeave()"
+	  (mousedown)="onMouseDown()">{{tagValue}}</li>

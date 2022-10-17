@@ -1,13 +1,8 @@
-import { Testability } from '@angular/core';
 import { ComponentFixture, TestBed, tick, fakeAsync, async } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { Observable, of } from 'rxjs';
 import { TagbarComponent } from './tagbar.component';
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+import { ListItemComponent } from './list-item/list-item.component'
 
 describe('TagbarComponent', () => {
 
@@ -51,16 +46,17 @@ describe('TagbarComponent', () => {
         expect(component.tags.length).toBe(initialLen);
       });
 
-      it(`should not add a tag if maxTags is set to 3 and there are 3 tags`, () => {
-        component = new TagbarComponent();
-        component.tags = Object.assign([], initialTags);
-        component.maxTags = 3;
-        component.ngOnInit();
+      it(`should not add a tag if maxTags is set to 3 and there are 3 tags`,
+         () => {
+           component = new TagbarComponent();
+           component.tags = Object.assign([], initialTags);
+           component.maxTags = 3;
+           component.ngOnInit();
 
-        let newTag = 'bob';
-        component.addTag(newTag);
-        expect(component.tags.length).toEqual(initialLen);
-        expect(component.tags.indexOf(newTag)).toEqual(-1);
+           let newTag = 'bob';
+           component.addTag(newTag);
+           expect(component.tags.length).toEqual(initialLen);
+           expect(component.tags.indexOf(newTag)).toEqual(-1);
       });
 
       it('should not add a blank tag (all whitespace)', () => {
@@ -144,7 +140,7 @@ describe('TagbarComponent', () => {
 
     beforeEach(async () => {
       await TestBed.configureTestingModule({
-        declarations: [TagbarComponent],
+        declarations: [TagbarComponent, ListItemComponent],
         imports: [FormsModule]
       }).compileComponents();
     });
