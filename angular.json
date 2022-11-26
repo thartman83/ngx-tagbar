@@ -28,18 +28,6 @@
             "tsConfig": "projects/tagbar/tsconfig.spec.json",
             "karmaConfig": "projects/tagbar/karma.conf.js"
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/tagbar/tsconfig.lib.json",
-              "projects/tagbar/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
         }
       }
     },
@@ -136,19 +124,6 @@
               "projects/tagbar-example/src/styles.css"
             ],
             "scripts": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/tagbar-example/tsconfig.app.json",
-              "projects/tagbar-example/tsconfig.spec.json",
-              "projects/tagbar-example/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
           }
         },
         "e2e": {
