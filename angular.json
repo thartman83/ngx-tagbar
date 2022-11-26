@@ -58,7 +58,6 @@
             "main": "projects/tagbar-example/src/main.ts",
             "polyfills": "projects/tagbar-example/src/polyfills.ts",
             "tsConfig": "projects/tagbar-example/tsconfig.app.json",
-            "aot": true,
             "assets": [
               "projects/tagbar-example/src/favicon.ico",
               "projects/tagbar-example/src/assets"
@@ -66,7 +65,13 @@
             "styles": [
               "projects/tagbar-example/src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -96,7 +101,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
