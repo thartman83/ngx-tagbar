@@ -28,9 +28,12 @@
           <li [class.tagbar--search-list-empty]="_searchTags === undefined || _searchTags.length === 0">
           </li>
           <ngx-list-item *ngFor="let searchTag of _searchTags; let i = index"
-                     [tagValue]="searchTag"
-                     [index]="i"
-                     (select)="addTagByIndex(i)">
+                         [tagValue]="searchTag"
+                         [index]="i"
+                         [highlighted]="i === _searchIndex"
+                         [selected]="tags.includes(searchTag)"
+                         (select)="addTagByIndex(i)">
+
           </ngx-list-item>
         </ul>
       </div>

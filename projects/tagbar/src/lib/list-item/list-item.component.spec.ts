@@ -30,8 +30,8 @@ describe('ListItemComponent', () => {
       expect(el.innerText).toEqual('foo');
     });
 
-    it('should set aria-current property when hilighted', () => {
-      component.hilighted = true;
+    it('should set aria-current property when highlighted', () => {
+      component.highlighted = true;
 
       fixture.detectChanges();
 
@@ -45,23 +45,33 @@ describe('ListItemComponent', () => {
          fixture.detectChanges();
 
          expect(el.getAttribute('aria-selected')).toBe('true');
-         console.log(el.disabled);
-         expect(el.disabled).toBeTruthy();
        });
 
-    it('should hilight onMouseEnter event', () => {
+    it(`when selected is true
+        should set the li class to tagbar--search-list-item-selected`,
+       () => {
+         const de = fixture.debugElement;
+
+         component.selected = true;
+         fixture.detectChanges();
+
+         const li = de.query(By.css('.tagbar--search-list-item'));
+         expect(li.classes['tagbar--search-list-item-selected']).toBeTruthy();
+       });
+
+    it('should highlight onMouseEnter event', () => {
       component.onMouseEnter();
       fixture.detectChanges();
 
-      expect(component.hilighted).toBeTrue();
+      expect(component.highlighted).toBeTrue();
       expect(el.getAttribute('aria-current')).toEqual('true');
     });
 
-    it('should un-hilight onMouseLeave event', () => {
+    it('should un-highlight onMouseLeave event', () => {
       component.onMouseLeave();
       fixture.detectChanges();
 
-      expect(component.hilighted).toBeFalse();
+      expect(component.highlighted).toBeFalse();
       expect(el.getAttribute('aria-current')).toEqual('false');
     });
 

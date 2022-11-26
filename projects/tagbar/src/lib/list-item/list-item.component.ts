@@ -8,9 +8,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class ListItemComponent implements OnInit {
   private _tagValue: string = '';
   private _idx: number = -1;
-
-  selected: boolean = false;
-  hilighted: boolean = false;
+  private _selected: boolean = false;
+  private _highlighted: boolean = false;
 
   @Input('tagValue')
   get tagValue(): string { return this._tagValue; }
@@ -20,6 +19,15 @@ export class ListItemComponent implements OnInit {
   get index(): number { return this._idx }
   set index(value: number) { this._idx = value; }
 
+  @Input('selected')
+  get selected(): boolean { return this._selected; }
+  set selected(value: boolean) { this._selected = value; }
+
+  @Input('highlighted')
+  get highlighted(): boolean { return this._highlighted; }
+  set highlighted(value: boolean) { this._highlighted = value; }
+
+
   @Output() select = new EventEmitter<number>();
 
   constructor() { }
@@ -28,11 +36,11 @@ export class ListItemComponent implements OnInit {
   }
 
   onMouseEnter() {
-    this.hilighted = true;
+    this.highlighted = true;
   }
 
   onMouseLeave() {
-    this.hilighted = false;
+    this.highlighted = false;
   }
 
   onMouseDown() {

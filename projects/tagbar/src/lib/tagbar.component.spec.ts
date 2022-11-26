@@ -102,36 +102,6 @@ describe('TagbarComponent', () => {
       });
     });
 
-    // getMatchingSourceTags unit tests
-    /*describe('::getMatchingSourceTags', () => {
-      it(`should return 2 tags ['bar', 'baz'] called with a 'b'`, () => {
-  component = new TagbarComponent();
-  component.source = Object.assign([], initialTags);
-  component.ngOnInit();
-
-  let res = component.getMatchingSourceTags('b');
-  expect(res.length).toEqual(2);
-
-  let fn = (needle: string): string[] => {
-    return initialTags.filter((tag) => tag.indexOf(needle) !== -1);
-  }
-
-  component.source = fn;
-  expect(component.getMatchingSourceTags('b').length).toEqual(2);
-      });
-
-      if(`should return 2 tags ['bar', 'baz']`)
-
-  it('should return nothing when there is no source', () =>{
-    component = new TagbarComponent();
-    component.ngOnInit();
-
-    let res = component.getMatchingSourceTags('foo');
-    expect(res.length).toEqual(0);
-  });
-  });*/
-
-
   });
 
   describe('functional tests', () => {
@@ -387,7 +357,7 @@ describe('TagbarComponent', () => {
 
       it(`when a static source is present
           when the tagbar is searching
-          up and down arrows should highligh searchable values`,
+          up and down arrows should highlight searchable values`,
         fakeAsync(() => {
           const de = fixture.debugElement;
           const i = de.query(By.css('.tagbar--input')).nativeElement;
@@ -569,7 +539,10 @@ describe('TagbarComponent', () => {
         expect(component.isSearching).toBeTrue();
 
         const li = de.query(By.css('.tagbar--search-list-item-active'));
-        const otherLi = de.query(By.css('.tagbar--search-list-item-active+li'));
+        expect(li.nativeElement.innerText).toEqual('foo');
+        const otherLi = de.query(By.css('.tagbar--search-list-item:not(.tagbar--search-list-item-active)'));
+        console.log(otherLi.nativeElement);
+        expect(otherLi.nativeElement.innerText).toEqual('bar');
 
         otherLi.triggerEventHandler('mouseover', '');
         fixture.detectChanges();
@@ -582,7 +555,7 @@ describe('TagbarComponent', () => {
     it(`when a static source is present
         when the tagbar is searching
         when an element already exists in the tagbar
-        should display as disabled`,
+        should display as selected`,
       fakeAsync(() => {
         const de = fixture.debugElement;
         const i = de.query(By.css('.tagbar--input')).nativeElement;
@@ -593,16 +566,15 @@ describe('TagbarComponent', () => {
         tick();
         fixture.detectChanges();
 
-        const li = de.query(By.css('.tagbar--search-list-item-active'));
-        expect(li).toBeTruthy();
+        const li = de.query(By.css('.tagbar--search-list-item-selected'));
+        expect(li).toBeNull();
 
-        component.addSearchItem('foo');
+        component.addTag('foo');
         component.onFocus('');
         tick();
         fixture.detectChanges();
 
-        const sameLi = de.query(By.css('.tagbar--search-list-item-active'));
-        expect(sameLi.classes['tagbar--search-list-item-disabled']).toBeTruthy();
+        expect(de.query(By.css('.tagbar--search-list-item-selected'))).toBeTruthy();
       }));
 
     it(`when a static source is present

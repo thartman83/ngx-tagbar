@@ -3,13 +3,15 @@ import { NgModule } from '@angular/core';
 import { TagbarComponent } from './tagbar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ListItemComponent } from './list-item/list-item.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [TagbarComponent, ListItemComponent],
   imports: [
     BrowserModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CommonModule
   ],
   bootstrap: [TagbarComponent],
   exports: [TagbarComponent]

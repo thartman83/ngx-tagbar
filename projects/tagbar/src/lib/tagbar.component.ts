@@ -60,6 +60,10 @@ export class TagbarComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  addTagByIndex(idx: number) {
+    this.addTag(this._searchTags[idx]);
+  }
+
   /// *** Public Methods *** ///
   addTag(newTag: string) {
     // strip the whitespace from the beginning and ending of the tag
@@ -253,9 +257,5 @@ export class TagbarComponent implements OnInit {
 
   hasSource(): boolean {
     return this.source !== undefined || this.asyncSource !== undefined;
-  }
-
-  addSearchItem(searchItem: string): void {
-    this.addTag(searchItem);
   }
 }
