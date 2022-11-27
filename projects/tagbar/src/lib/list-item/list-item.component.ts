@@ -3,7 +3,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 @Component({
   selector: 'ngx-list-item',
   templateUrl: './list-item.component.html',
-  styleUrls: ['./list-item.component.css']
+  styleUrls: ['./list-item.component.scss']
 })
 export class ListItemComponent implements OnInit {
   private _tagValue: string = '';
