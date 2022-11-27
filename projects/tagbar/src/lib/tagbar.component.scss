@@ -91,10 +91,6 @@ $tag-color: var(--tag-color);
             }
         }
 
-        &-results {
-
-        }
-
         &-list {
             list-style: none;
 	          margin-top: auto;
@@ -102,19 +98,6 @@ $tag-color: var(--tag-color);
             padding-left: 0;
             overflow: auto;
             max-height: 10rem;
-
-            &-item {
-		            &-active {
-		                background-color: #00f;
-		                color: #fff;
-		            }
-		            &-selected {
-		                color: #888;
-		            }
-                cursor: pointer;
-                list-style: none;
-                padding: .25rem;
-            }
 
             &-empty::after {
                 content: 'No Search Results'

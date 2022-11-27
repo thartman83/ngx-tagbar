@@ -1,0 +1,15 @@
+.tagbar--search-list-item {
+
+    cursor: pointer;
+    list-style: none;
+    padding: .25rem;
+
+		&-active {
+		    background-color: #00f;
+		    color: #fff;
+		}
+
+		&-selected {
+		    color: #888;
+		}
+}
